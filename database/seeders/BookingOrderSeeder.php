@@ -13,5 +13,6 @@ class BookingOrderSeeder extends Seeder
      */
     public function run(): void
     {
+        
     }
 }

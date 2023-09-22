@@ -18,8 +18,6 @@ class UserSeeder extends Seeder
         $user->last_name = 'last01';
         $user->email = 'user01@gmail.com';
         $user->password = bcrypt('1234');
-        $user->phone = '0123456789';
-        $user->role = 'USER';
         $user->save();
     }
 }
