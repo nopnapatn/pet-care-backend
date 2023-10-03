@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\Api\PetController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,7 +17,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/register', [App\Http\Controllers\Api\AuthController::class, 'register']);
+Route::post('/register', [AuthController::class, 'register']);
+Route::middleware(["auth:api"])->group(function () {
+
+    Route::post('/rooms/booking', [BookingController::class, 'store']);
+    Route::post('/pets/create-pet', [PetController::class, 'store']);
+
+    // Route::get('/pets', [PetController::class, 'index']);
+    // Route::get('/pets/{pet}', [PetController::class, 'show']);
+    // Route::get('/pets/{pet}/edit', [PetController::class, 'edit']);
+    // Route::put('/pets/{pet}', [PetController::class, 'update']);
+    // Route::delete('/pets/{pet}', [PetController::class, 'destroy']);
+});
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

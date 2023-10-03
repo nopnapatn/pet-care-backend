@@ -18,4 +18,17 @@ class BookingOrder extends Model
     {
         return $this->belongsTo(Room::class);
     }
+
+    public function pets()
+    {
+        return $this->belongsToMany(Pet::class);
+    }
+
+    public function getTotalDays()
+    {
+        $checkIn = new \DateTime($this->check_in);
+        $checkOut = new \DateTime($this->check_out);
+        $interval = $checkIn->diff($checkOut);
+        return $interval->days;
+    }
 }

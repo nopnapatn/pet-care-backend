@@ -14,4 +14,13 @@ class Pet extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function bookingOrders()
+    {
+        return $this->belongsToMany(BookingOrder::class);
+    }
+
+    public function room()
+    {
+        return $this->belongsTo(Room::class);
+    }
 }

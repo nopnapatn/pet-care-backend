@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('type');
             $table->foreignId('user_id')->constrained();
             $table->integer('age');
-            $table->string('breeds');
+            $table->string('breed');
             $table->string('image_url')->nullable();
             $table->timestamps();
         });

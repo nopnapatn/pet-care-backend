@@ -10,14 +10,15 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    { 
+    {
         Schema::create('booking_orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('room_id')->constrained();
+            $table->string('room_number');
             $table->foreignId('user_id')->constrained();
+            // $table->foreignId('pet_id')->constrained();
             $table->date('check_in');
             $table->date('check_out');
-            $table->integer('amount');
+            $table->integer('pets_amount');
             $table->decimal('total_price', 10, 2);
             $table->text('owner_instruction')->nullable();
             $table->timestamps();

@@ -14,22 +14,20 @@ class RoomSeeder extends Seeder
      */
     public function run(): void
     {
-        $room = new Room();
-        $room->title = 'Standard Room';
-        $room->description = 'This is a standard room for 2 pets.';
-        $room->price = 500;
-        $room->status = HotelStatus::AVAILABLE;
-        $room->available_amount = 20;
-        $room->max_pets = 2;
-        $room->save();
+        $roomTypes = [
+            ['type' => '1', 'start' => 'A'],
+            ['type' => '2', 'start' => 'B'],
+            ['type' => '3', 'start' => 'C'],
+        ];
 
-        $room = new Room();
-        $room->title = 'Deluxe Room';
-        $room->description = 'This is a deluxe room for 4 pets.';
-        $room->price = 1000;
-        $room->status = HotelStatus::AVAILABLE;
-        $room->available_amount = 10;
-        $room->max_pets = 4;
-        $room->save();
+        foreach ($roomTypes as $roomType) {
+            for ($i = 1; $i <= 10; $i++) {
+                $room = new Room();
+                $room->room_type_id = $roomType['type'];
+                $room->number = $roomType['start'] . $i;
+                $room->status = 'AVAILABLE';
+                $room->save();
+            }
+        }
     }
 }

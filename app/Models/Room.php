@@ -9,10 +9,22 @@ class Room extends Model
 {
     use HasFactory;
 
+    public function roomType()
+    {
+        return $this->belongsTo(RoomType::class);
+    }
+
     public function bookingOrders()
     {
         return $this->hasMany(BookingOrder::class);
     }
 
-    
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function pets()
+    {
+        return $this->belongsTo(Pet::class);
+    }
 }

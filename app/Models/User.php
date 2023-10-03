@@ -13,6 +13,16 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    public function bookingOrders()
+    {
+        return $this->hasMany(BookingOrder::class);
+    }
+
+    public function pets()
+    {
+        return $this->hasMany(Pet::class);
+    }
+
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *

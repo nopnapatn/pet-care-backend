@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\BookingOrder;
+use App\Models\Pet;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,13 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rooms', function (Blueprint $table) {
+        Schema::create('booking_order_pet', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('room_type_id')->constrained();
-            $table->foreignId('user_id')->nullable()->constrained();
-            $table->foreignId('pet_id')->nullable()->constrained();
-            $table->string('status')->default('AVAILABLE');
-            $table->string('number');
+            $table->foreignIdFor(BookingOrder::class);
+            $table->foreignIdFor(Pet::class);
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('rooms');
+        Schema::dropIfExists('booking_order_pet');
     }
 };
