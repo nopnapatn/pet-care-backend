@@ -32,20 +32,26 @@ class BookingController extends Controller
     {
         // Validate the request
 
+        // Find the room type
         $roomType = RoomType::find($request->get('room_type_id'));
-        if ($roomType->available_amount < 1) {
-            return redirect()->back()->withErrors(['message' => 'No rooms available']);
+        // Check if there are rooms available
+        if (!$roomType->hasAvailableRooms()) {
+            return redirect()->back()->withErrors(['message' => 'No rooms available'], 400);
         }
 
+        // Decrease the available amount
         $roomType->available_amount -= 1;
         $roomType->save();
 
+        // Find the first available room
         $room = $roomType->rooms()->where('status', 'AVAILABLE')->first();
+        // Update the room details
         $room->status = 'UNAVAILABLE';
         $room->user_id = auth()->user()->id;
         $room->pet_id = $request->get('pet_id');
         $room->save();
 
+        // Create the booking order
         $bookingOrder = new BookingOrder();
         $bookingOrder->room_number = $room->number;
         $bookingOrder->user_id = auth()->user()->id;
@@ -55,12 +61,13 @@ class BookingController extends Controller
         $bookingOrder->pets_amount = request()->get('pets_amount');
         $bookingOrder->total_price = $roomType->price * $bookingOrder->pets_amount * $bookingOrder->getTotalDays();
         $bookingOrder->owner_instruction = $request->get('owner_instruction');
+        $bookingOrder->save();
+
         $petIds = $request->get('pet_ids');
         $pets = [];
         foreach ($petIds as $petId) {
             $pets[] = $petId;
         }
-        $bookingOrder->save();
         $bookingOrder->pets()->attach($pets);
 
         return response()->json([

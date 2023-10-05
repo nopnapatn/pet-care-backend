@@ -12,4 +12,14 @@ class RoomType extends Model
     {
         return $this->hasMany(Room::class);
     }
+
+    public function getAvailableRoomsCount()
+    {
+        return $this->rooms()->where('status', 'AVAILABLE')->count();
+    }
+
+    public function hasAvailableRooms()
+    {
+        return $this->getAvailableRoomsCount() > 0;
+    }
 }
