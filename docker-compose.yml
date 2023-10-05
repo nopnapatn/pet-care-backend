@@ -50,6 +50,7 @@ services:
             retries: 3
             timeout: 5s
     phpmyadmin:
+        platform: linux/amd64
         depends_on: 
             - mysql
         image: phpmyadmin/phpmyadmin
