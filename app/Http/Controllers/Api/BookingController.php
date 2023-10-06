@@ -14,7 +14,8 @@ class BookingController extends Controller
      */
     public function index()
     {
-        //
+        $bookingOrders = BookingOrder::all();
+        return $bookingOrders;
     }
 
     /**
@@ -31,6 +32,7 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         // Validate the request
+        // Validate date
 
         // Find the room type
         $roomType = RoomType::find($request->get('room_type_id'));
@@ -48,14 +50,12 @@ class BookingController extends Controller
         // Update the room details
         $room->status = 'UNAVAILABLE';
         $room->user_id = auth()->user()->id;
-        $room->pet_id = $request->get('pet_id');
         $room->save();
 
         // Create the booking order
         $bookingOrder = new BookingOrder();
         $bookingOrder->room_number = $room->number;
         $bookingOrder->user_id = auth()->user()->id;
-        // $bookingOrder->pet_id = $request->get('pet_id');
         $bookingOrder->check_in = $request->get('check_in');
         $bookingOrder->check_out = $request->get('check_out');
         $bookingOrder->pets_amount = request()->get('pets_amount');
@@ -63,12 +63,6 @@ class BookingController extends Controller
         $bookingOrder->owner_instruction = $request->get('owner_instruction');
         $bookingOrder->save();
 
-        $petIds = $request->get('pet_ids');
-        $pets = [];
-        foreach ($petIds as $petId) {
-            $pets[] = $petId;
-        }
-        $bookingOrder->pets()->attach($pets);
 
         return response()->json([
             'message' => 'Booking successful',
