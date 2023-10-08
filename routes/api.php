@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\PetController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\RoomTypeController;
 use App\Models\BookingOrder;
 use Illuminate\Http\Request;
@@ -32,8 +33,8 @@ Route::apiResource('room-types', RoomTypeController::class);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::group([
 
+Route::group([
     'middleware' => 'api',
     'prefix' => 'auth'
 
@@ -44,3 +45,8 @@ Route::group([
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
 });
+
+// Route::apiResource('profile', ProfileController::class);
+
+Route::post('profile/{email}', [ProfileController::class, 'update']);
+Route::get('profile/{email}', [ProfileController::class, 'show']);

@@ -18,6 +18,12 @@ class UserSeeder extends Seeder
         $user->last_name = 'last01';
         $user->email = 'user01@gmail.com';
         $user->password = bcrypt('1234');
+        $user->phone_number = '0988888888';
+        $user->address = 'address01';
+        // $user->image_url = 'https://picsum.photos/200';
+        $user->role = 'user';
         $user->save();
+
+        User::factory()->count(2)->create();
     }
 }
