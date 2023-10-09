@@ -19,31 +19,36 @@ class BookingOrderFactory extends Factory
      */
     public function definition(): array
     {
-        $user_id = User::all()->random()->id;
-
-        $room_type_id = rand(1, 3);
-        $roomType = RoomType::find($room_type_id);
-        $roomType->available_amount -= 1;
-        $roomType->save();
+        $user = User::inRandomOrder()->first();
+        $roomType = RoomType::where('available_amount', '>', 0)->inRandomOrder()->first();
 
         $room = $roomType->rooms()->where('status', 'AVAILABLE')->first();
-        $room->status = 'UNAVAILABLE';
-        $room->user_id = $user_id;
-        $room->save();
 
-        $pets_amount = rand(1, $roomType->max_pets);
+        if ($roomType->available_amount > 0 && $room) {
+            $room->status = 'UNAVAILABLE';
+            $room->user_id = $user->id;
+            $room->save();
 
-        $check_in = $this->faker->dateTimeBetween('now', '+1 month');
-        $check_out = $this->faker->dateTimeBetween($check_in->format('Y-m-d') . '+1 days', $check_in->format('Y-m-d') . '+12 days');
-        $nights = $check_in->diff($check_out)->days;
-        return [
-            'room_number' => $room->number,
-            'user_id' => $user_id,
-            'check_in' => $check_in->format('Y-m-d'),
-            'check_out' => $check_out->format('Y-m-d'),
-            'pets_amount' => $pets_amount,
-            'total_price' => $roomType->price * $roomType->max_pets * $nights,
-            'owner_instruction' => $this->faker->text(100),
-        ];
+            $roomType->available_amount = $roomType->getAvailableRoomsCount();
+            $roomType->save();
+            $pets_amount = rand(1, $roomType->max_pets);
+
+            // date calculations
+            $check_in = $this->faker->dateTimeBetween('now', '+1 month');
+            $check_out = $this->faker->dateTimeBetween($check_in->format('Y-m-d') . '+1 days', $check_in->format('Y-m-d') . '+12 days');
+            $nights = $check_in->diff($check_out)->days;
+
+            // Update room and room type within a database transaction
+            return [
+                'room_number' => $room->number,
+                'user_id' => $user->id,
+                'check_in' => $check_in->format('Y-m-d'),
+                'check_out' => $check_out->format('Y-m-d'),
+                'pets_amount' => $pets_amount,
+                'total_price' => $roomType->price * $pets_amount * $nights,
+                'owner_instruction' => $this->faker->text(100),
+            ];
+        }
+        return [];
     }
 }
