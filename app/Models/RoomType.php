@@ -22,4 +22,12 @@ class RoomType extends Model
     {
         return $this->getAvailableRoomsCount() > 0;
     }
+
+    protected $fillable = [
+        'title',
+        'description',
+        'price',
+        'available_amount',
+        'max_pets',
+    ];
 }

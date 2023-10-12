@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Room;
 use App\Models\RoomType;
 use Illuminate\Http\Request;
 
@@ -31,6 +32,19 @@ class RoomTypeController extends Controller
      */
     public function store(Request $request)
     {
+
+        $roomType = new RoomType();
+        $roomType->fill($request->all());
+        $roomType->save();
+
+        for ($i = 1; $i <= $request->get("available_amount"); $i++) {
+            $room = new Room();
+            $room->room_type_id = $roomType->id;
+            $room->number = $request->get("start") . $i;
+            $room->status = 'AVAILABLE';
+            $room->save();
+        }
+        return $roomType;
     }
 
     /**
@@ -46,7 +60,6 @@ class RoomTypeController extends Controller
      */
     public function edit(RoomType $roomType)
     {
-        //
     }
 
     /**
@@ -54,7 +67,10 @@ class RoomTypeController extends Controller
      */
     public function update(Request $request, RoomType $roomType)
     {
-        //
+        $roomType->fill($request->all());
+        $roomType->save();
+
+        return $roomType;
     }
 
     /**
@@ -62,6 +78,8 @@ class RoomTypeController extends Controller
      */
     public function destroy(RoomType $roomType)
     {
-        //
+        $title = $roomType->title;
+        $roomType->delete();
+        return response()->json(['message' => $title . ' deleted successfully'], 200);
     }
 }

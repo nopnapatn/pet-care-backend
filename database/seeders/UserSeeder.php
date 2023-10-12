@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
         $user->first_name = 'admin01';
         $user->last_name = 'adad';
         $user->email = 'admin@gmail.com';
-        $user->role = 'ADMIN';
+        $user->role = 'STAFF';
         $user->password = bcrypt('1234');
         $user->save();
 
