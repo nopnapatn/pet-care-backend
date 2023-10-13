@@ -34,19 +34,29 @@ class BookingOrderFactory extends Factory
             $pets_amount = rand(1, $roomType->max_pets);
 
             // date calculations
-            $check_in = $this->faker->dateTimeBetween('now', '+1 month');
+            $check_in = $this->faker->dateTimeBetween('-1 month', '+1 month');
             $check_out = $this->faker->dateTimeBetween($check_in->format('Y-m-d') . '+1 days', $check_in->format('Y-m-d') . '+12 days');
-            $nights = $check_in->diff($check_out)->days;
+            $nights = date_diff($check_in, $check_out)->format('%a');
 
-            // Update room and room type within a database transaction
+            // Check the current date and set the status accordingly
+            $currentDate = now();
+            if ($currentDate >= $check_in && $currentDate <= $check_out) {
+                $status = 'CHECKED IN';
+            } elseif ($currentDate > $check_out) {
+                $status = 'CHECKED OUT';
+            } else {
+                $status = 'BOOKED';
+            }
             return [
                 'room_number' => $room->number,
+                'room_type_id' => $roomType->id,
                 'user_id' => $user->id,
                 'check_in' => $check_in->format('Y-m-d'),
                 'check_out' => $check_out->format('Y-m-d'),
                 'pets_amount' => $pets_amount,
                 'total_price' => $roomType->price * $pets_amount * $nights,
                 'owner_instruction' => $this->faker->text(100),
+                'status' => $status,
             ];
         }
         return [];

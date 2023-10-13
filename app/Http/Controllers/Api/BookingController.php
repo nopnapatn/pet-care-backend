@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\BookingOrder;
+use App\Models\Room;
 use App\Models\RoomType;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,14 @@ class BookingController extends Controller
      */
     public function index()
     {
-        $bookingOrders = BookingOrder::all();
+        // $bookingOrders = BookingOrder::all();
+        // return $bookingOrders;
+
+        // return with user name by joining the users table with booking_orders table
+        $bookingOrders = BookingOrder::select('booking_orders.*', 'users.first_name as user_name')
+            ->join('users', 'booking_orders.user_id', '=', 'users.id')
+            ->get();
+
         return $bookingOrders;
     }
 
@@ -32,42 +40,151 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         // Validate the request
-        // Validate date
+        $this->validateBookingOrder($request);
 
         // Find the room type
         $roomType = RoomType::find($request->get('room_type_id'));
+        $checkIn = $request->input('check_in');
+        $checkOut = $request->input('check_out');
+
         // Check if there are rooms available
-        if (!$roomType->hasAvailableRooms()) {
-            return redirect()->back()->withErrors(['message' => 'No rooms available'], 400);
-        }
+        $this->checkRoomAvailability($roomType, $checkIn, $checkOut);
 
-        // Decrease the available amount
-        $roomType->available_amount -= 1;
-        $roomType->save();
+        $room = $this->book($roomType->id,)['room'];
 
+        // Create the booking order
+        $bookingOrder = new BookingOrder([
+            'room_number' => $room->number,
+            'room_type_id' => $roomType->id,
+            'user_id' => auth()->user()->id,
+            'check_in' => $checkIn,
+            'check_out' => $checkOut,
+            'pets_amount' => request()->get('pets_amount'),
+            'total_price' => $this->calculateTotalPrice($roomType->price, request()->get('pets_amount'), $this->getTotalNights($checkIn, $checkOut)),
+            'owner_instruction' => $request->get('owner_instruction'),
+        ]);
+        $bookingOrder->save();
+
+        $room->booking_order_id = $bookingOrder->id;
+        $room->save();
+
+        return response()->json([
+            'message' => 'Created booking order successfully',
+            'booking_order' => $bookingOrder,
+        ], 201);
+    }
+
+    public function book($roomTypeId)
+    {
+        $roomType = RoomType::find($roomTypeId);
         // Find the first available room
         $room = $roomType->rooms()->where('status', 'AVAILABLE')->first();
-        // Update the room details
+        if (!$room) {
+            return response()->json([
+                'message' => 'No rooms available',
+            ], 400);
+        }
         $room->status = 'UNAVAILABLE';
         $room->user_id = auth()->user()->id;
         $room->save();
 
-        // Create the booking order
-        $bookingOrder = new BookingOrder();
-        $bookingOrder->room_number = $room->number;
-        $bookingOrder->user_id = auth()->user()->id;
-        $bookingOrder->check_in = $request->get('check_in');
-        $bookingOrder->check_out = $request->get('check_out');
-        $bookingOrder->pets_amount = request()->get('pets_amount');
-        $bookingOrder->total_price = $roomType->price * $bookingOrder->pets_amount * $bookingOrder->getTotalDays();
-        $bookingOrder->owner_instruction = $request->get('owner_instruction');
-        $bookingOrder->save();
-
-
+        // Update the room type details
+        $roomType->available_amount = $roomType->getAvailableRoomsCount();
+        $roomType->save();
         return response()->json([
             'message' => 'Booking successful',
+            'room' => $room,
+        ], 201);
+    }
+
+    public function checkRoomAvailability($roomType, $checkIn, $checkOut,)
+    {
+        if (!$roomType) {
+            return response()->json([
+                'message' => 'Room type not found',
+            ], 400);
+        }
+
+        $maxRoomCount = Room::where('room_type_id', $roomType->id)->count();
+
+        // Query for conflicting booking
+        $conflictingBookings = BookingOrder::where('room_type_id', $roomType->id)
+            ->where(function ($query) use ($checkIn, $checkOut) {
+                $query->whereBetween('check_in', [$checkIn, $checkOut])
+                    ->orWhereBetween('check_out', [$checkIn, $checkOut]);
+            })
+            ->get();
+
+        if ($conflictingBookings->count() >= $maxRoomCount) {
+            return response()->json([
+                'message' => 'No rooms available for the selected dates',
+            ], 400);
+        }
+    }
+
+    public function calculateTotalPrice($price, $petsAmount, $nights)
+    {
+        return $price * $petsAmount * $nights;
+    }
+
+    public function getBookingOrders()
+    {
+        $user = auth()->user();
+        $bookingOrders = BookingOrder::where('user_id', $user->id)->get();
+        return $bookingOrders;
+    }
+
+    public function checkOut(Request $request)
+    {
+        $bookingOrder = BookingOrder::find($request->get('booking_order_id'));
+        if (!$bookingOrder) {
+            return response()->json([
+                'message' => 'Booking order not found',
+            ], 400);
+        }
+        $bookingOrder->status = 'CHECKED_OUT';
+        $bookingOrder->save();
+
+        $room = $bookingOrder->room;
+        $room->status = 'AVAILABLE';
+        $room->user_id = null;
+        $room->save();
+
+        $roomType = $room->roomType;
+        $roomType->available_amount = $roomType->getAvailableRoomsCount();
+        $roomType->save();
+
+        return response()->json([
+            'message' => 'Check out successful',
             'booking_order' => $bookingOrder,
         ], 201);
+    }
+
+    public function validateBookingOrder(Request $request)
+    {
+        $rules = [
+            'room_type_id' => 'required|exists:room_types,id',
+            'check_in' => 'required|date',
+            'check_out' => 'required|date|after:check_in',
+            'pets_amount' => 'required|integer|min:1',
+            'owner_instruction' => 'nullable|string',
+        ];
+
+        $messages = [
+            'room_type_id.required' => 'Room type is required',
+            'room_type_id.exists' => 'Room type not found',
+            'check_in.required' => 'Check in date is required',
+            'check_in.date' => 'Check in date must be a valid date',
+            'check_out.required' => 'Check out date is required',
+            'check_out.date' => 'Check out date must be a valid date',
+            'check_out.after' => 'Check out date must be after check in date',
+            'pets_amount.required' => 'Pets amount is required',
+            'pets_amount.integer' => 'Pets amount must be an integer',
+            'pets_amount.min' => 'Pets amount must be at least 1',
+            'owner_instruction.string' => 'Owner instruction must be a string',
+        ];
+
+        return $request->validate($rules, $messages);
     }
 
     /**

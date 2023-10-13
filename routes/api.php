@@ -28,6 +28,7 @@ Route::middleware(["auth:api"])->group(function () {
     Route::apiResource('booking-orders', BookingController::class);
     Route::apiResource('room-types', RoomTypeController::class);
     Route::post('room-types/{id}/book', [BookingController::class, 'store']);
+    Route::post('booking-orders/{id}/check-out', [BookingController::class, 'checkOut']);
 });
 
 Route::apiResource('room-types', RoomTypeController::class);

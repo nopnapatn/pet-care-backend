@@ -31,4 +31,11 @@ class BookingOrder extends Model
         $interval = $checkIn->diff($checkOut);
         return $interval->days;
     }
+
+    public function getTotalNights()
+    {
+        $checkIn = new \DateTime($this->check_in);
+        $checkOut = new \DateTime($this->check_out);
+        return date_diff($checkIn, $checkOut)->format('%a');
+    }
 }

@@ -15,21 +15,14 @@ class RoomSeeder extends Seeder
      */
     public function run(): void
     {
-        $roomTypes = [
-            ['type' => '1', 'start' => 'A'],
-            ['type' => '2', 'start' => 'B'],
-            ['type' => '3', 'start' => 'C'],
-            ['type' => '4', 'start' => 'D'],
-            ['type' => '5', 'start' => 'E'],
-            ['type' => '6', 'start' => 'F'],
-        ];
+        $roomTypes = RoomType::all();
 
         foreach ($roomTypes as $roomType) {
-            $type = RoomType::where('id', $roomType['type'])->first();
-            for ($i = 1; $i <= $type->available_amount; $i++) {
+            // $type = RoomType::where('id', $roomType['type'])->first();
+            for ($i = 1; $i <= $roomType->available_amount; $i++) {
                 $room = new Room();
-                $room->room_type_id = $roomType['type'];
-                $room->number = $roomType['start'] . $i;
+                $room->room_type_id = $roomType->id;
+                $room->number = $roomType->start . $i;
                 $room->status = 'AVAILABLE';
                 $room->save();
             }

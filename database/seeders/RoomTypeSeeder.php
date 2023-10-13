@@ -21,6 +21,7 @@ class RoomTypeSeeder extends Seeder
                 'status' => 'AVAILABLE',
                 'available_amount' => 5,
                 'max_pets' => 1,
+                'start' => 'A'
             ],
             [
                 'title' => 'Medium Room',
@@ -29,6 +30,7 @@ class RoomTypeSeeder extends Seeder
                 'status' => 'AVAILABLE',
                 'available_amount' => 5,
                 'max_pets' => 2,
+                'start' => 'B'
             ],
             [
                 'title' => 'Large Room',
@@ -37,6 +39,7 @@ class RoomTypeSeeder extends Seeder
                 'status' => 'AVAILABLE',
                 'available_amount' => 5,
                 'max_pets' => 3,
+                'start' => 'C'
             ],
             [
                 'title' => 'Extra Small Room',
@@ -45,6 +48,7 @@ class RoomTypeSeeder extends Seeder
                 'status' => 'AVAILABLE',
                 'available_amount' => 3,
                 'max_pets' => 1,
+                'start' => 'D'
             ],
             [
                 'title' => 'Super Suite',
@@ -53,6 +57,7 @@ class RoomTypeSeeder extends Seeder
                 'status' => 'AVAILABLE',
                 'available_amount' => 2,
                 'max_pets' => 5,
+                'start' => 'F'
             ],
             [
                 'title' => 'Budget Room',
@@ -61,6 +66,7 @@ class RoomTypeSeeder extends Seeder
                 'status' => 'AVAILABLE',
                 'available_amount' => 8,
                 'max_pets' => 2,
+                'start' => 'G'
             ],
         ];
 

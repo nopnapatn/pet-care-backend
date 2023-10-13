@@ -41,6 +41,6 @@ class BookingOrderSeeder extends Seeder
         // $bookingOrder->total_price = $totalPrice;
         // $bookingOrder->save();
 
-        BookingOrderFactory::new()->count(10)->create();
+        BookingOrderFactory::new()->count(20)->create();
     }
 }

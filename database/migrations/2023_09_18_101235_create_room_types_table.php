@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('status')->default('AVAILABLE');
             $table->integer('available_amount');
             $table->integer('max_pets');
+            $table->string('start');
             //images
             //reviews
             $table->timestamps();
