@@ -19,7 +19,7 @@ class RoomTypeSeeder extends Seeder
                 'description' => 'Small room for single pet',
                 'price' => 100,
                 'status' => 'AVAILABLE',
-                'available_amount' => 5,
+                'available_amount' => 10,
                 'max_pets' => 1,
                 'start' => 'A'
             ],
@@ -28,7 +28,7 @@ class RoomTypeSeeder extends Seeder
                 'description' => 'Medium room for two pets',
                 'price' => 200,
                 'status' => 'AVAILABLE',
-                'available_amount' => 5,
+                'available_amount' => 10,
                 'max_pets' => 2,
                 'start' => 'B'
             ],
@@ -37,16 +37,16 @@ class RoomTypeSeeder extends Seeder
                 'description' => 'Large room for three pets',
                 'price' => 300,
                 'status' => 'AVAILABLE',
-                'available_amount' => 5,
+                'available_amount' => 10,
                 'max_pets' => 3,
                 'start' => 'C'
             ],
             [
                 'title' => 'Extra Small Room',
                 'description' => 'Cozy room for a single pet',
-                'price' => 90,
+                'price' => 400,
                 'status' => 'AVAILABLE',
-                'available_amount' => 3,
+                'available_amount' => 10,
                 'max_pets' => 1,
                 'start' => 'D'
             ],
@@ -55,16 +55,16 @@ class RoomTypeSeeder extends Seeder
                 'description' => 'Luxurious suite for multiple pets',
                 'price' => 500,
                 'status' => 'AVAILABLE',
-                'available_amount' => 2,
+                'available_amount' => 5,
                 'max_pets' => 5,
                 'start' => 'F'
             ],
             [
                 'title' => 'Budget Room',
                 'description' => 'Economical room for pet owners',
-                'price' => 75,
+                'price' => 600,
                 'status' => 'AVAILABLE',
-                'available_amount' => 8,
+                'available_amount' => 5,
                 'max_pets' => 2,
                 'start' => 'G'
             ],

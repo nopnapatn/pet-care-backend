@@ -2,11 +2,15 @@
 
 namespace Database\Seeders;
 
+use App\Http\Controllers\Api\BookingController;
 use App\Models\BookingOrder;
 use App\Models\Room;
+use App\Models\RoomType;
+use App\Models\User;
 use Database\Factories\BookingOrderFactory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Http\Request;
 
 class BookingOrderSeeder extends Seeder
 {
@@ -15,32 +19,42 @@ class BookingOrderSeeder extends Seeder
      */
     public function run(): void
     {
-        // $bookingData = [
-        //     'room_id' => 1,
-        //     'user_id' => 1,
-        //     'pet_id' => 1,
-        //     'check_in' => '2023-10-17',
-        //     'check_out' => '2023-10-19',
-        //     'pets_amount' => 1,
-        //     'owner_instruction' => 'Please bring a towel',
-        // ];
+        $faker = \Faker\Factory::create();
+
+        for ($i = 0; $i < 60; $i++) {
+            $user = User::inRandomOrder()->first();
+            $roomType = RoomType::where('status', 'AVAILABLE')->inRandomOrder()->first();
+            $check_in = $faker->dateTimeBetween('-1 month', '+1 month');
+            $check_out = $faker->dateTimeBetween($check_in->format('Y-m-d') . '+1 days', $check_in->format('Y-m-d') . '+12 days');
+            $currentDate = now();
 
 
-        // // Calculate total_price
-        // $room = Room::find($bookingData['room_id']);
-        // $checkIn = new \DateTime($bookingData['check_in']);
-        // $checkOut = new \DateTime($bookingData['check_out']);
-        // $interval = $checkIn->diff($checkOut);
-        // $totalDays = $interval->days;
-        // $totalPrice = $room->price * $totalDays;
+            $request = [
+                'room_type_id' => $roomType->id,
+                'check_in' => $check_in->format('Y-m-d'),
+                'check_out' => $check_out->format('Y-m-d'),
+                'pets_amount' => rand(1, $roomType->max_pets),
+                'owner_instruction' => $faker->text(100),
+            ];
+            $bookingOrder = app(BookingController::class)->createBooking($request, $user);
 
-        // Create the BookingOrder record
-        // $bookingOrder = new BookingOrder();
-        // $bookingOrder->fill($bookingData);
-        // $bookingOrder->pets_amount = 1; // You can set the amount as needed
-        // $bookingOrder->total_price = $totalPrice;
-        // $bookingOrder->save();
+            if ($bookingOrder != null) {
+                if ($currentDate >= $check_in && $currentDate <= $check_out) {
+                    $status = 'CHECKED IN';
+                } elseif ($currentDate > $check_out) {
+                    $status = 'CHECKED OUT';
+                    $request = Request::create('booking-orders/' . $bookingOrder->id . '/check-out', 'POST', [
+                        'booking_order_id' => $bookingOrder->id,
+                    ]);
+                    // app(BookingController::class)->checkOut($bookingOrder->id);
+                } else {
+                    $status = 'BOOKED';
+                }
+                $bookingOrder->status = $status;
+                $bookingOrder->save();
+            }
+        }
 
-        BookingOrderFactory::new()->count(20)->create();
+        // BookingOrderFactory::new()->count(2)->create();
     }
 }

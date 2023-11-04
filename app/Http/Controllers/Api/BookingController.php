@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\BookingOrder;
 use App\Models\Room;
 use App\Models\RoomType;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 class BookingController extends Controller
 {
@@ -15,15 +17,27 @@ class BookingController extends Controller
      */
     public function index()
     {
-        // $bookingOrders = BookingOrder::all();
-        // return $bookingOrders;
+        $bookingKey = "allBookingOrders";
+        $value = Redis::get($bookingKey);
+        if (empty($value)) {
+            // BookingOrders with user name by joining the users table with booking_orders table
+            $bookingOrders = $bookingOrders = BookingOrder::select('booking_orders.*', 'users.first_name as user_name')
+                ->join('users', 'booking_orders.user_id', '=', 'users.id')
+                ->get();
+            Redis::set($bookingKey, json_encode($bookingOrders));
+        } else {
+            $bookingOrders = json_decode($value);
+        }
+        return $bookingOrders;
+    }
 
-        // return with user name by joining the users table with booking_orders table
+    public function updateBookingOrdersCache()
+    {
+        $bookingKey = "allBookingOrders";
         $bookingOrders = BookingOrder::select('booking_orders.*', 'users.first_name as user_name')
             ->join('users', 'booking_orders.user_id', '=', 'users.id')
             ->get();
-
-        return $bookingOrders;
+        Redis::set($bookingKey, json_encode($bookingOrders));
     }
 
     /**
@@ -42,31 +56,21 @@ class BookingController extends Controller
         // Validate the request
         $this->validateBookingOrder($request);
 
+        $data = $request->all();
+
         // Find the room type
-        $roomType = RoomType::find($request->get('room_type_id'));
-        $checkIn = $request->input('check_in');
-        $checkOut = $request->input('check_out');
+        $roomType = RoomType::find($data['room_type_id']);
+        $checkIn = $data['check_in'];
+        $checkOut = $data['check_out'];
 
         // Check if there are rooms available
-        $this->checkRoomAvailability($roomType, $checkIn, $checkOut);
+        if (!$this->checkRoomAvailability($roomType, $checkIn, $checkOut)) {
+            return response()->json([
+                'message' => 'No rooms available for the selected dates',
+            ], 400);
+        }
 
-        $room = $this->book($roomType->id,)['room'];
-
-        // Create the booking order
-        $bookingOrder = new BookingOrder([
-            'room_number' => $room->number,
-            'room_type_id' => $roomType->id,
-            'user_id' => auth()->user()->id,
-            'check_in' => $checkIn,
-            'check_out' => $checkOut,
-            'pets_amount' => request()->get('pets_amount'),
-            'total_price' => $this->calculateTotalPrice($roomType->price, request()->get('pets_amount'), $this->getTotalNights($checkIn, $checkOut)),
-            'owner_instruction' => $request->get('owner_instruction'),
-        ]);
-        $bookingOrder->save();
-
-        $room->booking_order_id = $bookingOrder->id;
-        $room->save();
+        $bookingOrder = $this->createBooking($data, auth()->user());
 
         return response()->json([
             'message' => 'Created booking order successfully',
@@ -74,7 +78,40 @@ class BookingController extends Controller
         ], 201);
     }
 
-    public function book($roomTypeId)
+    public function createBooking(array $data, User $user)
+    {
+        // Find the room type
+        $roomType = RoomType::find($data['room_type_id']);
+
+        $checkIn = new \DateTime($data['check_in']);
+        $checkOut = new \DateTime($data['check_out']);
+        // Calculate the number of nights
+        $nights = $checkIn->diff($checkOut)->format('%a');
+
+        $room = $this->book($roomType->id, $user->id);
+        if ($room instanceof Room) {
+            // Create the booking order
+            $bookingOrder = new BookingOrder([
+                'room_number' => $room->number,
+                'room_type_id' => $roomType->id,
+                'user_id' => $user->id,
+                'check_in' => $checkIn,
+                'check_out' => $checkOut,
+                'pets_amount' => $data['pets_amount'],
+                'total_price' => $this->calculateTotalPrice($roomType->price, $data['pets_amount'], $nights),
+                'owner_instruction' => $data['owner_instruction'],
+            ]);
+            $bookingOrder->save();
+
+            $room->booking_order_id = $bookingOrder->id;
+            $room->save();
+
+            return $bookingOrder;
+        }
+        return null;
+    }
+
+    public function book($roomTypeId, $userId)
     {
         $roomType = RoomType::find($roomTypeId);
         // Find the first available room
@@ -85,16 +122,13 @@ class BookingController extends Controller
             ], 400);
         }
         $room->status = 'UNAVAILABLE';
-        $room->user_id = auth()->user()->id;
+        $room->user_id = $userId;
         $room->save();
 
         // Update the room type details
         $roomType->available_amount = $roomType->getAvailableRoomsCount();
         $roomType->save();
-        return response()->json([
-            'message' => 'Booking successful',
-            'room' => $room,
-        ], 201);
+        return $room;
     }
 
     public function checkRoomAvailability($roomType, $checkIn, $checkOut,)
@@ -116,10 +150,9 @@ class BookingController extends Controller
             ->get();
 
         if ($conflictingBookings->count() >= $maxRoomCount) {
-            return response()->json([
-                'message' => 'No rooms available for the selected dates',
-            ], 400);
+            return false;
         }
+        return true;
     }
 
     public function calculateTotalPrice($price, $petsAmount, $nights)
