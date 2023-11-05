@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('room_number');
             $table->foreignId('room_type_id')->constrained();
             $table->foreignId('user_id')->constrained();
-            // $table->foreignId('pet_id')->constrained();
             $table->date('check_in');
             $table->date('check_out');
             $table->integer('pets_amount');

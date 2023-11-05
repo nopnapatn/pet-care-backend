@@ -62,6 +62,7 @@ class BookingController extends Controller
         $roomType = RoomType::find($data['room_type_id']);
         $checkIn = $data['check_in'];
         $checkOut = $data['check_out'];
+        $user = User::find($data['user_id']);
 
         // Check if there are rooms available
         if (!$this->checkRoomAvailability($roomType, $checkIn, $checkOut)) {
@@ -70,7 +71,7 @@ class BookingController extends Controller
             ], 400);
         }
 
-        $bookingOrder = $this->createBooking($data, auth()->user());
+        $bookingOrder = $this->createBooking($data, $user);
 
         return response()->json([
             'message' => 'Created booking order successfully',
@@ -91,16 +92,18 @@ class BookingController extends Controller
         $room = $this->book($roomType->id, $user->id);
         if ($room instanceof Room) {
             // Create the booking order
-            $bookingOrder = new BookingOrder([
-                'room_number' => $room->number,
-                'room_type_id' => $roomType->id,
-                'user_id' => $user->id,
-                'check_in' => $checkIn,
-                'check_out' => $checkOut,
-                'pets_amount' => $data['pets_amount'],
-                'total_price' => $this->calculateTotalPrice($roomType->price, $data['pets_amount'], $nights),
-                'owner_instruction' => $data['owner_instruction'],
-            ]);
+
+            $bookingOrder = new BookingOrder();
+            $bookingOrder->room_number = $room->number;
+            $bookingOrder->room_type_id = $roomType->id;
+            $bookingOrder->user_id = $user->id;
+            $bookingOrder->check_in = $checkIn;
+            $bookingOrder->check_out = $checkOut;
+            $bookingOrder->pets_amount = $data['pets_amount'];
+            $bookingOrder->total_price = $this->calculateTotalPrice($roomType->price, $data['pets_amount'], $nights);
+            if (isset($data['owner_instruction'])) {
+                $bookingOrder->owner_instruction = $data['owner_instruction'];
+            }
             $bookingOrder->save();
 
             $room->booking_order_id = $bookingOrder->id;
