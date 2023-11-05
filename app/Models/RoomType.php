@@ -29,5 +29,7 @@ class RoomType extends Model
         'price',
         'available_amount',
         'max_pets',
+        'pet_type',
+        'start',
     ];
 }

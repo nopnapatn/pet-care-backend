@@ -30,10 +30,12 @@ class BookingOrderSeeder extends Seeder
 
 
             $request = [
+                'user_id' => $user->id,
                 'room_type_id' => $roomType->id,
                 'check_in' => $check_in->format('Y-m-d'),
                 'check_out' => $check_out->format('Y-m-d'),
                 'pets_amount' => rand(1, $roomType->max_pets),
+                'pet_type' => $roomType->pet_type,
                 'owner_instruction' => $faker->text(100),
             ];
             $bookingOrder = app(BookingController::class)->createBooking($request, $user);

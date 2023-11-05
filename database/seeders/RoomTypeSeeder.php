@@ -15,59 +15,67 @@ class RoomTypeSeeder extends Seeder
     {
         $roomTypes = [
             [
-                'title' => 'Small Room',
-                'description' => 'Small room for single pet',
+                'title' => 'Small Cat Room',
+                'description' => 'Small room for a single cat',
                 'price' => 100,
                 'status' => 'AVAILABLE',
                 'available_amount' => 10,
                 'max_pets' => 1,
+                'pet_type' => 'CAT',
                 'start' => 'A'
             ],
             [
-                'title' => 'Medium Room',
-                'description' => 'Medium room for two pets',
+                'title' => 'Medium Cat Room',
+                'description' => 'Medium room for two cats',
                 'price' => 200,
                 'status' => 'AVAILABLE',
                 'available_amount' => 10,
                 'max_pets' => 2,
+                'pet_type' => 'CAT',
                 'start' => 'B'
             ],
             [
-                'title' => 'Large Room',
-                'description' => 'Large room for three pets',
+                'title' => 'Large Cat Room',
+                'description' => 'Large room for three cats',
                 'price' => 300,
                 'status' => 'AVAILABLE',
                 'available_amount' => 10,
                 'max_pets' => 3,
+                'pet_type' => 'CAT',
                 'start' => 'C'
             ],
             [
-                'title' => 'Extra Small Room',
-                'description' => 'Cozy room for a single pet',
-                'price' => 400,
+                'title' => 'Small Dog Room',
+                'description' => 'Small room for a single dog',
+                'price' => 100,
                 'status' => 'AVAILABLE',
                 'available_amount' => 10,
                 'max_pets' => 1,
+                'pet_type' => 'DOG',
                 'start' => 'D'
             ],
             [
-                'title' => 'Super Suite',
-                'description' => 'Luxurious suite for multiple pets',
-                'price' => 500,
+                'title' => 'Medium Dog Room',
+                'description' => 'Medium room for two dogs',
+                'price' => 200,
                 'status' => 'AVAILABLE',
-                'available_amount' => 5,
-                'max_pets' => 5,
+                'available_amount' => 10,
+                'max_pets' => 2,
+                'pet_type' => 'DOG',
+                'start' => 'E'
+            ],
+
+            [
+                'title' => 'Large Dog Room',
+                'description' => 'Large room for three dogs',
+                'price' => 300,
+                'status' => 'AVAILABLE',
+                'available_amount' => 10,
+                'max_pets' => 3,
+                'pet_type' => 'DOG',
                 'start' => 'F'
             ],
-            [
-                'title' => 'Budget Room',
-                'description' => 'Economical room for pet owners',
-                'price' => 600,
-                'status' => 'AVAILABLE',
-                'available_amount' => 5,
-                'max_pets' => 2,
-                'start' => 'G'
-            ],
+
         ];
 
         foreach ($roomTypes as $roomType) {

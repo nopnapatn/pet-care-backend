@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('pets_amount');
             $table->decimal('total_price', 10, 2);
             $table->text('owner_instruction')->nullable();
-            $table->string('status')->nullable()->default('BOOKED');
+            $table->string('status')->nullable()->default('WAITING');
             $table->timestamps();
         });
     }
