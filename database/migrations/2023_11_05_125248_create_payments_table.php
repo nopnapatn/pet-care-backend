@@ -13,13 +13,12 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('booking_order_id')->constrained();
+            $table->foreignId('booking_order_id');
             $table->foreignId('user_id')->constrained();
             $table->string('name');
-            $table->string('bank');
             $table->time('time');
             $table->date('date');
-            $table->integer('amount');
+            $table->decimal('amount', 10, 2);
             $table->string('slip_path')->nullable();
             $table->timestamps();
         });

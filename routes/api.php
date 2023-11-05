@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\PetController;
 use App\Http\Controllers\Api\RoomTypeController;
 use App\Models\BookingOrder;
@@ -23,12 +24,14 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::middleware(["auth:api"])->group(function () {
 
     // Route::post('/rooms/booking', [BookingController::class, 'store']);
+    // Route::apiResource('payments', [PaymentController::class]);
+    Route::post('/payments{id}/store', [PaymentController::class, 'store']);
+
     Route::apiResource('booking', BookingController::class);
-    Route::apiResource('pets', PetController::class);
     Route::post('room-types/{id}/book', [BookingController::class, 'store']);
+    Route::post('booking-orders/{id}/check-out', [BookingController::class, 'checkOut']);
     Route::apiResource('booking-orders', BookingController::class);
     Route::apiResource('room-types', RoomTypeController::class);
-    Route::post('booking-orders/{id}/check-out', [BookingController::class, 'checkOut']);
 });
 
 Route::apiResource('room-types', RoomTypeController::class);

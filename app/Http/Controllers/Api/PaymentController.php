@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\BookingOrder;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 
@@ -27,16 +28,18 @@ class PaymentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
+        $bookingOrder = BookingOrder::findOrFail($id);
         $payment = new Payment();
-        $payment->booking_order_id = $request->get('booking_order_id');
+        $payment->booking_order_id = $bookingOrder->id;
+        $payment->user_id = $request->get('user_id');
         $payment->name = $request->get('name');
-        $payment->bank = $request->get('bank');
         $payment->time = $request->get('time');
         $payment->date = $request->get('date');
         $payment->amount = $request->get('amount');
         $payment->save();
+
         return response()->json([
             'message' => 'Payment created successfully',
             'payment' => $payment,

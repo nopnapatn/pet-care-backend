@@ -9,6 +9,19 @@ class Payment extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'booking_order_id',
+        'name',
+        'time',
+        'date',
+        'amount',
+    ];
+
+    protected $casts = [
+        // 'date' => 'date',
+        'amount' => 'float',
+    ];
+
     public function bookingOrder()
     {
         return $this->belongsTo(BookingOrder::class);
