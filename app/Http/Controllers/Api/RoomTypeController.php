@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Enums\InUseStatus;
+use App\Models\Enums\MaintenanceStatus;
+use App\Models\ImageCatalogue;
 use App\Models\Room;
 use App\Models\RoomType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class RoomTypeController extends Controller
 {
@@ -31,21 +35,26 @@ class RoomTypeController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
+        // $rules = [
+        //     'title' => 'required|string|max:255',
+        //     'description' => 'required|string',
+        //     'price' => 'required|numeric|min:0',
+        //     'pet_type' => 'required|in:cat,dog', // You can specify allowed values
+        //     'available_amount' => 'required|integer|min:0',
+        //     'max_pets' => 'required|integer|min:0',
+        //     'images' => 'array', // Ensure it's an array of files
+        //     'images.*' => 'image|mimes:jpeg,png,gif|max:2048', // Validate each image file
+        // ];
+
+        // Validate the request data against the rules
+        // $validatedData = $request->validate($rules);
 
         $roomType = new RoomType();
-        $roomType->fill($request->all());
+        $roomType->fill($request->except('images')); // Exclude images from the request data
         $roomType->save();
 
         for ($i = 1; $i <= $request->get("available_amount"); $i++) {
@@ -55,22 +64,34 @@ class RoomTypeController extends Controller
             $room->status = 'AVAILABLE';
             $room->save();
         }
+
+        // Handle image uploads
+        if ($request->hasFile('images')) {
+            $images = $request->file('images');
+            $imagePaths = [];
+
+            foreach ($images as $image) {
+                $fileName = uniqid() . '.' . $image->getClientOriginalExtension();
+                $imagePath = $image->storeAs('room-type-images', $fileName, 'public');
+                array_push($imagePaths, $imagePath);
+            }
+
+            foreach ($imagePaths as $imagePath) {
+                Log::info($imagePath);
+                $imageCatalogue = new ImageCatalogue();
+                $imageCatalogue->room_type_id = $roomType->id;
+                $imageCatalogue->image_url = $imagePath;
+                $imageCatalogue->save();
+            }
+        }
+
         return $roomType;
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(RoomType $roomType)
     {
         return $roomType;
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(RoomType $roomType)
-    {
     }
 
     /**
@@ -82,6 +103,12 @@ class RoomTypeController extends Controller
         $roomType->save();
 
         return $roomType;
+    }
+
+    public function setStatus(RoomType $roomType, Request $request)
+    {
+        $roomType->status = $request->get('status');
+        $roomType->save();
     }
 
     /**

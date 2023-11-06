@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rooms', function (Blueprint $table) {
+        Schema::create('image_catalogues', function (Blueprint $table) {
             $table->id();
             $table->foreignId('room_type_id')->constrained();
-            $table->foreignId('user_id')->nullable()->constrained();
-            $table->foreignId('booking_order_id')->nullable();
-            $table->string('status')->default('AVAILABLE')->comment('AVAILABLE, IN_USE, MAINTENANCE');
-            $table->string('number');
+            $table->string('image_url');
+            $table->string('image_caption')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('rooms');
+        Schema::dropIfExists('image_catalogue');
     }
 };
