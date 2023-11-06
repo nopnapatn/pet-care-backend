@@ -42,21 +42,19 @@ class BookingOrderSeeder extends Seeder
 
             if ($bookingOrder != null) {
                 if ($currentDate >= $check_in && $currentDate <= $check_out) {
-                    $status = 'CHECKED IN';
+                    $status = 'IN_USE';
                 } elseif ($currentDate > $check_out) {
-                    $status = 'CHECKED OUT';
+                    $status = 'COMPLETE';
                     $request = Request::create('booking-orders/' . $bookingOrder->id . '/check-out', 'POST', [
                         'booking_order_id' => $bookingOrder->id,
                     ]);
                     // app(BookingController::class)->checkOut($bookingOrder->id);
                 } else {
-                    $status = 'BOOKED';
+                    $status = 'WAITING';
                 }
                 $bookingOrder->status = $status;
                 $bookingOrder->save();
             }
         }
-
-        // BookingOrderFactory::new()->count(2)->create();
     }
 }

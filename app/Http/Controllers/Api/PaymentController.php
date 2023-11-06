@@ -20,14 +20,6 @@ class PaymentController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -41,12 +33,32 @@ class PaymentController extends Controller
         $payment->time = $request->get('time');
         $payment->date = $request->get('date');
         $payment->amount = $request->get('amount');
-        $payment->save();
 
-        return response()->json([
-            'message' => 'Payment created successfully',
-            'payment' => $payment,
-        ]);
+        if ($request->hasFile('slip')) {
+            $image = $request->file('slip');
+            $imageName = $payment->name . '_' . time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images/slips'), $imageName);
+            $imageURL = 'images/slips/' . $imageName;
+            $payment->slip_path = $imageURL;
+        } else {
+            return response()->json(['message' => 'No file uploaded'], 400);
+        }
+
+        $payment->save();
+        $imagePath = asset($payment->slip_path);
+        if ($payment->save()) {
+            return response()->json(['message' => 'Payment created successfully', 'payment' => $payment, 'imagePath' => $imagePath], 200);
+        } else {
+            return response()->json(['message' => 'Payment created failed'], 400);
+        }
+    }
+
+    public function verifyPayment(Request $request)
+    {
+        $payment = Payment::findOrFail($request->get('payment_id'));
+        $payment->status = 'VERIFIED';
+        $payment->save();
+        return response()->json(['message' => 'Payment verified successfully', 'payment' => $payment], 200);
     }
 
     /**
@@ -58,25 +70,9 @@ class PaymentController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Payment $payment)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Payment $payment)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Payment $payment)
     {
         //
     }

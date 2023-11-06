@@ -33,6 +33,21 @@ class RoomTypeController extends Controller
         $roomTypes = RoomType::where('pet_type', 'CAT')->get();
         return $roomTypes;
     }
+    public function getAvailableRoomTypes(Request $request)
+    {
+        $startDate = $request->get('start_date');
+        $endDate = $request->get('end_date');
+        $petsAmount = $request->get('pets_amount');
+
+        $roomTypes = RoomType::where('max_pets', '>=', $petsAmount)->get();
+        $availableRoomTypes = [];
+        foreach ($roomTypes as $roomType) {
+            if (app(BookingController::class)->checkRoomAvailability($roomType, $startDate, $endDate)) {
+                $availableRoomTypes[] = $roomType;
+            }
+        }
+        return response()->json(['available_room_types' => $availableRoomTypes], 200);
+    }
 
     /**
      * Store a newly created resource in storage.

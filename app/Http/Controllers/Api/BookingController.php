@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\BookingOrder;
+use App\Models\Enums\BookingOrderStatus;
 use App\Models\Room;
 use App\Models\RoomType;
 use App\Models\User;
@@ -73,10 +74,17 @@ class BookingController extends Controller
 
         $bookingOrder = $this->createBooking($data, $user);
 
-        return response()->json([
-            'message' => 'Created booking order successfully',
-            'booking_order' => $bookingOrder,
-        ], 201);
+        if ($bookingOrder) {
+            $this->updateBookingOrdersCache();
+            return response()->json([
+                'message' => 'Booking order created successfully',
+                'booking_order' => $bookingOrder,
+            ], 201);
+        } else {
+            return response()->json([
+                'message' => 'Booking order creation failed',
+            ], 400);
+        }
     }
 
     public function createBooking(array $data, User $user)
@@ -170,6 +178,31 @@ class BookingController extends Controller
         return $bookingOrders;
     }
 
+    public function checkIn(Request $request)
+    {
+        $bookingOrder = BookingOrder::find($request->get('booking_order_id'));
+        if (!$bookingOrder) {
+            return response()->json([
+                'message' => 'Booking order not found',
+            ], 400);
+        }
+        $bookingOrder->status = BookingOrderStatus::IN_USE;
+        $bookingOrder->save();
+
+        $room = $bookingOrder->room;
+        $room->status = 'IN_USE';
+        $room->save();
+
+        $roomType = $room->roomType;
+        $roomType->available_amount = $roomType->getAvailableRoomsCount();
+        $roomType->save();
+
+        return response()->json([
+            'message' => 'Check in successful',
+            'booking_order' => $bookingOrder,
+        ], 201);
+    }
+
     public function checkOut(Request $request)
     {
         $bookingOrder = BookingOrder::find($request->get('booking_order_id'));
@@ -178,7 +211,7 @@ class BookingController extends Controller
                 'message' => 'Booking order not found',
             ], 400);
         }
-        $bookingOrder->status = 'CHECKED_OUT';
+        $bookingOrder->status = 'COMPLETE';
         $bookingOrder->save();
 
         $room = $bookingOrder->room;
@@ -233,6 +266,57 @@ class BookingController extends Controller
         ], 200);
     }
 
+    public function getBookingOrder($id)
+    {
+        $bookingOrder = BookingOrder::find($id);
+        return response()->json([
+            'booking_order' => $bookingOrder,
+        ], 200);
+    }
+
+    public function getWaitingBookingOrders()
+    {
+        $bookingOrders = BookingOrder::where('status', 'BOOKED')->get();
+        return response()->json([
+            'booking_orders' => $bookingOrders,
+        ], 200);
+    }
+
+    public function getPendingBookingOrders()
+    {
+        $bookingOrders = BookingOrder::where('status', 'PENDING')->get();
+        return response()->json([
+            'booking_orders' => $bookingOrders,
+        ], 200);
+    }
+    public function getVerifiedBookingOrders()
+    {
+        $bookingOrders = BookingOrder::where('status', 'VERIFIED')->get();
+        return response()->json([
+            'booking_orders' => $bookingOrders,
+        ], 200);
+    }
+    public function getInUseBookingOrders()
+    {
+        $bookingOrders = BookingOrder::where('status', 'IN_USE')->get();
+        return response()->json([
+            'booking_orders' => $bookingOrders,
+        ], 200);
+    }
+    public function getCompleteBookingOrders()
+    {
+        $bookingOrders = BookingOrder::where('status', 'COMPLETE')->get();
+        return response()->json([
+            'booking_orders' => $bookingOrders,
+        ], 200);
+    }
+    public function getCanceledBookingOrders()
+    {
+        $bookingOrders = BookingOrder::where('status', 'CANCELED')->get();
+        return response()->json([
+            'booking_orders' => $bookingOrders,
+        ], 200);
+    }
     /**
      * Display the specified resource.
      */
