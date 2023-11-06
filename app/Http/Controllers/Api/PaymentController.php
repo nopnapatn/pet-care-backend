@@ -32,6 +32,7 @@ class PaymentController extends Controller
         $payment->name = $request->get('name');
         $payment->time = $request->get('time');
         $payment->date = $request->get('date');
+        $payment->type = $request->get('type');
         $payment->amount = $request->get('amount');
 
         if ($request->hasFile('slip')) {
@@ -59,6 +60,18 @@ class PaymentController extends Controller
         $payment->status = 'VERIFIED';
         $payment->save();
         return response()->json(['message' => 'Payment verified successfully', 'payment' => $payment], 200);
+    }
+
+    public function getHotelPayments()
+    {
+        $payments = Payment::where('type', 'HOTEL')->get();
+        return response()->json(['payments' => $payments], 200);
+    }
+
+    public function getServicePayments()
+    {
+        $payments = Payment::where('type', 'SERVICE')->get();
+        return response()->json(['payments' => $payments], 200);
     }
 
     /**
