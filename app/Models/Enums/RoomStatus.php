@@ -2,8 +2,9 @@
 
 namespace App\Models\Enums;
 
-enum InUseStatus: string
+enum RoomStatus: string
 {
         case AVAILABLE = 'AVAILABLE';
         case INUSE = 'IN_USE';
+        case MAINTENANCE = 'MAINTENANCE';
 }
