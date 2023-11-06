@@ -19,6 +19,17 @@ class RoomTypeController extends Controller
         return $roomTypes;
     }
 
+    public function getDogRooms()
+    {
+        $roomTypes = RoomType::where('pet_type', 'DOG')->get();
+        return $roomTypes;
+    }
+    public function getCatRooms()
+    {
+        $roomTypes = RoomType::where('pet_type', 'CAT')->get();
+        return $roomTypes;
+    }
+
     /**
      * Show the form for creating a new resource.
      */

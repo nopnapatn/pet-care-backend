@@ -30,6 +30,7 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
+        // $bookingOrder = BookingOrder::findOrFail($request->get('booking_order_id'));
         $bookingOrder = BookingOrder::findOrFail($request->get('booking_order_id'));
         $payment = new Payment();
         $payment->booking_order_id = $request->get('booking_order_id');

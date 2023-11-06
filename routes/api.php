@@ -28,13 +28,15 @@ Route::middleware(["auth:api"])->group(function () {
     // Route::apiResource('payments', [PaymentController::class]);
     Route::post('/payments/store', [PaymentController::class, 'store']);
 
+
+    Route::apiResource('booking-orders', BookingController::class);
     Route::get('booking-orders/{id}/my-bookings', [BookingController::class, 'myBookings']);
     Route::post('room-types/{id}/book', [BookingController::class, 'store']);
     Route::post('booking-orders/{id}/check-out', [BookingController::class, 'checkOut']);
-    Route::apiResource('booking-orders', BookingController::class);
-    Route::apiResource('room-types', RoomTypeController::class);
 });
 
+Route::get('room-types/cat-rooms', [RoomTypeController::class, 'getCatRooms']);
+Route::get('room-types/dog-rooms', [RoomTypeController::class, 'getDogRooms']);
 Route::apiResource('room-types', RoomTypeController::class);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
