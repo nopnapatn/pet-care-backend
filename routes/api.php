@@ -28,12 +28,18 @@ Route::middleware(["auth:api"])->group(function () {
     Route::post('/payments/store', [PaymentController::class, 'store']);
 
 
-    Route::apiResource('booking-orders', BookingController::class);
     Route::get('booking-orders/{id}/my-bookings', [BookingController::class, 'myBookings']);
-    Route::apiResource('booking', BookingController::class);
-    Route::apiResource('booking-orders', BookingController::class);
     Route::post('room-types/{id}/book', [BookingController::class, 'store']);
     Route::post('booking-orders/{id}/check-out', [BookingController::class, 'checkOut']);
+
+    Route::group(['prefix' => 'booking-orders'], function () {
+        Route::get('waiting', [BookingController::class, 'getWaitingBookingOrders']);
+        Route::get('pending', [BookingController::class, 'getPendingBookingOrders']);
+        Route::get('verified', [BookingController::class, 'getVerifiedBookingOrders']);
+        Route::get('in-use', [BookingController::class, 'getInUseBookingOrders']);
+        Route::get('complete', [BookingController::class, 'getCompleteBookingOrders']);
+        Route::get('canceled', [BookingController::class, 'getCanceledBookingOrders']);
+    });
 });
 
 Route::get('room-types/cat-rooms', [RoomTypeController::class, 'getCatRooms']);
