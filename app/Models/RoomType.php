@@ -23,6 +23,11 @@ class RoomType extends Model
         return $this->getAvailableRoomsCount() > 0;
     }
 
+    public function imageCatalogues()
+    {
+        return $this->hasMany(ImageCatalogue::class);
+    }
+
     protected $fillable = [
         'title',
         'description',
