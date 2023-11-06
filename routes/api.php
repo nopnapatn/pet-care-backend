@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\PetController;
 use App\Http\Controllers\Api\RoomTypeController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +28,7 @@ Route::middleware(["auth:api"])->group(function () {
     // Route::apiResource('payments', [PaymentController::class]);
     Route::post('/payments/store', [PaymentController::class, 'store']);
 
+    Route::get('users', [UserController::class, 'index']);
 
     Route::apiResource('booking-orders', BookingController::class);
     Route::get('booking-orders/{id}/my-bookings', [BookingController::class, 'myBookings']);
