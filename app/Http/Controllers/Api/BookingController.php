@@ -266,6 +266,57 @@ class BookingController extends Controller
         ], 200);
     }
 
+    public function getBookingOrder($id)
+    {
+        $bookingOrder = BookingOrder::find($id);
+        return response()->json([
+            'booking_order' => $bookingOrder,
+        ], 200);
+    }
+
+    public function getWaitingBookingOrders()
+    {
+        $bookingOrders = BookingOrder::where('status', 'BOOKED')->get();
+        return response()->json([
+            'booking_orders' => $bookingOrders,
+        ], 200);
+    }
+
+    public function getPendingBookingOrders()
+    {
+        $bookingOrders = BookingOrder::where('status', 'PENDING')->get();
+        return response()->json([
+            'booking_orders' => $bookingOrders,
+        ], 200);
+    }
+    public function getVerifiedBookingOrders()
+    {
+        $bookingOrders = BookingOrder::where('status', 'VERIFIED')->get();
+        return response()->json([
+            'booking_orders' => $bookingOrders,
+        ], 200);
+    }
+    public function getInUseBookingOrders()
+    {
+        $bookingOrders = BookingOrder::where('status', 'IN_USE')->get();
+        return response()->json([
+            'booking_orders' => $bookingOrders,
+        ], 200);
+    }
+    public function getCompleteBookingOrders()
+    {
+        $bookingOrders = BookingOrder::where('status', 'COMPLETE')->get();
+        return response()->json([
+            'booking_orders' => $bookingOrders,
+        ], 200);
+    }
+    public function getCanceledBookingOrders()
+    {
+        $bookingOrders = BookingOrder::where('status', 'CANCELED')->get();
+        return response()->json([
+            'booking_orders' => $bookingOrders,
+        ], 200);
+    }
     /**
      * Display the specified resource.
      */

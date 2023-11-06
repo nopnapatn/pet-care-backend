@@ -34,6 +34,15 @@ Route::middleware(["auth:api"])->group(function () {
     Route::post('room-types/{id}/book', [BookingController::class, 'store']);
     Route::post('booking-orders/{id}/check-in', [BookingController::class, 'checkIn']); // 
     Route::post('booking-orders/{id}/check-out', [BookingController::class, 'checkOut']); // 
+
+    Route::group(['prefix' => 'booking-orders'], function () {
+        Route::get('waiting', [BookingController::class, 'getWaitingBookingOrders']);
+        Route::get('pending', [BookingController::class, 'getPendingBookingOrders']);
+        Route::get('verified', [BookingController::class, 'getVerifiedBookingOrders']);
+        Route::get('in-use', [BookingController::class, 'getInUseBookingOrders']);
+        Route::get('complete', [BookingController::class, 'getCompleteBookingOrders']);
+        Route::get('canceled', [BookingController::class, 'getCanceledBookingOrders']);
+    });
 });
 
 Route::post('room-types/get-available-types', [RoomTypeController::class, 'getAvailableRoomTypes']);
