@@ -37,6 +37,7 @@ Route::middleware(["auth:api"])->group(function () {
     Route::post('room-types/{id}/book', [BookingController::class, 'store']);
     Route::post('booking-orders/{id}/check-in', [BookingController::class, 'checkIn']); // 
     Route::post('booking-orders/{id}/check-out', [BookingController::class, 'checkOut']); // 
+    Route::apiResource('booking-orders', BookingController::class);
 
     Route::group(['prefix' => 'booking-orders'], function () {
         Route::get('waiting', [BookingController::class, 'getWaitingBookingOrders']);
