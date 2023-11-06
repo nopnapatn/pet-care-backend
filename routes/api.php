@@ -36,24 +36,13 @@ Route::middleware(["auth:api"])->group(function () {
     Route::post('booking-orders/{id}/check-out', [BookingController::class, 'checkOut']);
 });
 
+Route::post('room-types/get-available-types', [RoomTypeController::class, 'getAvailableRoomTypes']);
 Route::get('room-types/cat-rooms', [RoomTypeController::class, 'getCatRooms']);
 Route::get('room-types/dog-rooms', [RoomTypeController::class, 'getDogRooms']);
+Route::put('room-types/{room_type}/in-use', [RoomTypeController::class, 'setInUseStatus'])->name('room-types.in-use');
+Route::put('room-types/{room_type}/maintenance', [RoomTypeController::class, 'setMaintenanceStatus'])->name('room-types.maintenance');
+Route::post('room-types/image-catalogues', [RoomTypeController::class, 'multipleUpload'])->name('room-types.image-catalogues.store');
 Route::apiResource('room-types', RoomTypeController::class);
-
-Route::put(
-    'room-types/{room_type}/in-use',
-    [RoomTypeController::class, 'setInUseStatus']
-)->name('room-types.in-use');
-
-Route::put(
-    'room-types/{room_type}/maintenance',
-    [RoomTypeController::class, 'setMaintenanceStatus']
-)->name('room-types.maintenance');
-
-Route::post(
-    'room-types/image-catalogues',
-    [RoomTypeController::class, 'multipleUpload']
-)->name('room-types.image-catalogues.store');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

@@ -73,10 +73,17 @@ class BookingController extends Controller
 
         $bookingOrder = $this->createBooking($data, $user);
 
-        return response()->json([
-            'message' => 'Created booking order successfully',
-            'booking_order' => $bookingOrder,
-        ], 201);
+        if ($bookingOrder) {
+            $this->updateBookingOrdersCache();
+            return response()->json([
+                'message' => 'Booking order created successfully',
+                'booking_order' => $bookingOrder,
+            ], 201);
+        } else {
+            return response()->json([
+                'message' => 'Booking order creation failed',
+            ], 400);
+        }
     }
 
     public function createBooking(array $data, User $user)

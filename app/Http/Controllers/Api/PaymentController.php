@@ -33,20 +33,24 @@ class PaymentController extends Controller
         $payment->amount = $request->get('amount');
 
         if ($request->hasFile('slip')) {
-            $slipPath = $request->file('slip')->store('slips', 'public');
-            $payment->slip_path = $slipPath;
+            $image = $request->file('slip');
+            $imageName = $payment->name . '_' . time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images/slips'), $imageName);
+            $imageURL = 'images/slips/' . $imageName;
+            $payment->slip_path = $imageURL;
         } else {
             return response()->json(['message' => 'No file uploaded'], 400);
         }
 
         $payment->save();
-
-        return response()->json([
-            'message' => 'Payment created successfully',
-            'payment' => $payment,
-        ]);
+        $imagePath = asset($payment->slip_path);
+        if ($payment->save()) {
+            return response()->json(['message' => 'Payment created successfully', 'payment' => $payment, 'imagePath' => $imagePath], 200);
+        } else {
+            return response()->json(['message' => 'Payment created failed'], 400);
+        }
     }
-
+   
     /**
      * Display the specified resource.
      */
