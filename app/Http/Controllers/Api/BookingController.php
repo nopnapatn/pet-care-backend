@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\BookingOrder;
+use App\Models\Enums\BookingOrderStatus;
 use App\Models\Room;
 use App\Models\RoomType;
 use App\Models\User;
@@ -177,6 +178,31 @@ class BookingController extends Controller
         return $bookingOrders;
     }
 
+    public function checkIn(Request $request)
+    {
+        $bookingOrder = BookingOrder::find($request->get('booking_order_id'));
+        if (!$bookingOrder) {
+            return response()->json([
+                'message' => 'Booking order not found',
+            ], 400);
+        }
+        $bookingOrder->status = BookingOrderStatus::IN_USE;
+        $bookingOrder->save();
+
+        $room = $bookingOrder->room;
+        $room->status = 'IN_USE';
+        $room->save();
+
+        $roomType = $room->roomType;
+        $roomType->available_amount = $roomType->getAvailableRoomsCount();
+        $roomType->save();
+
+        return response()->json([
+            'message' => 'Check in successful',
+            'booking_order' => $bookingOrder,
+        ], 201);
+    }
+
     public function checkOut(Request $request)
     {
         $bookingOrder = BookingOrder::find($request->get('booking_order_id'));
@@ -185,7 +211,7 @@ class BookingController extends Controller
                 'message' => 'Booking order not found',
             ], 400);
         }
-        $bookingOrder->status = 'CHECKED_OUT';
+        $bookingOrder->status = 'COMPLETE';
         $bookingOrder->save();
 
         $room = $bookingOrder->room;

@@ -26,14 +26,14 @@ Route::middleware(["auth:api"])->group(function () {
     // Route::post('/rooms/booking', [BookingController::class, 'store']);
     // Route::apiResource('payments', [PaymentController::class]);
     Route::post('/payments/store', [PaymentController::class, 'store']);
+    Route::post('/payments/verify', [PaymentController::class, 'verifyPayment']); //
 
 
-    Route::apiResource('booking-orders', BookingController::class);
+
     Route::get('booking-orders/{id}/my-bookings', [BookingController::class, 'myBookings']);
-    Route::apiResource('booking', BookingController::class);
-    Route::apiResource('booking-orders', BookingController::class);
     Route::post('room-types/{id}/book', [BookingController::class, 'store']);
-    Route::post('booking-orders/{id}/check-out', [BookingController::class, 'checkOut']);
+    Route::post('booking-orders/{id}/check-in', [BookingController::class, 'checkIn']); // 
+    Route::post('booking-orders/{id}/check-out', [BookingController::class, 'checkOut']); // 
 });
 
 Route::post('room-types/get-available-types', [RoomTypeController::class, 'getAvailableRoomTypes']);

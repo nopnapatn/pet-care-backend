@@ -50,7 +50,15 @@ class PaymentController extends Controller
             return response()->json(['message' => 'Payment created failed'], 400);
         }
     }
-   
+
+    public function verifyPayment(Request $request)
+    {
+        $payment = Payment::findOrFail($request->get('payment_id'));
+        $payment->status = 'VERIFIED';
+        $payment->save();
+        return response()->json(['message' => 'Payment verified successfully', 'payment' => $payment], 200);
+    }
+
     /**
      * Display the specified resource.
      */
