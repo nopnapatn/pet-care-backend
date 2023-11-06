@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
+            $table->string("type")->comment("PACKAGE, ALARCARTE");
+            // $table->integer('option_quantity')->nullable();
             $table->timestamps();
         });
     }

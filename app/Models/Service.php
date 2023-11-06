@@ -9,10 +9,15 @@ class Service extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description'];
+    protected $fillable = ['title', 'description', 'type', ];
 
-    public function ServiceOptions()
+    public function serviceOptions()
     {
         return $this->hasMany(ServiceOption::class);
+    }
+
+    public function serviceImages()
+    {
+        return $this->hasMany(ServiceImage::class);
     }
 }

@@ -10,6 +10,7 @@ use App\Models\Room;
 use App\Models\RoomType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class RoomTypeController extends Controller
 {
@@ -19,6 +20,7 @@ class RoomTypeController extends Controller
     public function index()
     {
         $roomTypes = RoomType::all();
+        // $roomTypes->load('imageCatalogues');
 
         return $roomTypes;
     }
@@ -77,7 +79,56 @@ class RoomTypeController extends Controller
             }
 
             foreach ($imagePaths as $imagePath) {
-                Log::info($imagePath);
+                $imageCatalogue = new ImageCatalogue();
+                $imageCatalogue->room_type_id = $roomType->id;
+                $imageCatalogue->image_url = $imagePath;
+                $imageCatalogue->save();
+            }
+        }
+
+        return response()->json([
+            'message' => 'Room type created successfully',
+            'room_type' => $roomType,
+        ]);
+    }
+
+
+    public function show(RoomType $roomType)
+    {
+        return $roomType;
+    }
+
+    public function update(Request $request, RoomType $roomType)
+    {
+        // Validate and process the form data
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'pet_type' => 'required|in:cat,dog', // Adjust to your pet types
+            'available_amount' => 'required|integer|min:0',
+            'max_pets' => 'required|integer|min:0',
+            'start' => 'required|string|max:255',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust to your file requirements
+        ]);
+
+        // Update the room type information
+        $roomType->update($request->all());
+
+        // Handle file uploads and delete old images
+        if ($request->hasFile('images')) {
+            // Delete existing images
+            foreach ($roomType->imageCatalogues as $imageCatalogue) {
+                Storage::disk('public')->delete($imageCatalogue->image_url);
+                $imageCatalogue->delete();
+            }
+
+            // Upload new images
+            $images = $request->file('images');
+
+            foreach ($images as $image) {
+                $fileName = uniqid() . '.' . $image->getClientOriginalExtension();
+                $imagePath = $image->storeAs('room-type-images', $fileName, 'public');
                 $imageCatalogue = new ImageCatalogue();
                 $imageCatalogue->room_type_id = $roomType->id;
                 $imageCatalogue->image_url = $imagePath;
@@ -88,22 +139,6 @@ class RoomTypeController extends Controller
         return $roomType;
     }
 
-
-    public function show(RoomType $roomType)
-    {
-        return $roomType;
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, RoomType $roomType)
-    {
-        $roomType->fill($request->all());
-        $roomType->save();
-
-        return $roomType;
-    }
 
     public function setStatus(RoomType $roomType, Request $request)
     {

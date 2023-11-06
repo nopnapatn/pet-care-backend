@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\PetController;
 use App\Http\Controllers\Api\RoomTypeController;
+use App\Http\Controllers\Api\ServiceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,13 +28,18 @@ Route::middleware(["auth:api"])->group(function () {
     // Route::apiResource('payments', [PaymentController::class]);
     Route::post('/payments/store', [PaymentController::class, 'store']);
 
-
     Route::apiResource('booking-orders', BookingController::class);
     Route::get('booking-orders/{id}/my-bookings', [BookingController::class, 'myBookings']);
     Route::apiResource('booking', BookingController::class);
     Route::apiResource('booking-orders', BookingController::class);
     Route::post('room-types/{id}/book', [BookingController::class, 'store']);
     Route::post('booking-orders/{id}/check-out', [BookingController::class, 'checkOut']);
+
+    Route::apiResource('services', ServiceController::class);
+    Route::post('services/create-alacarte', [ServiceController::class, 'createAlacarteService']);
+    Route::post('services/create-alacarte-option', [ServiceController::class, 'createAlacarteServiceOption']);
+    Route::put('services/{id}/update-alacarte', [ServiceController::class, 'updateAlacarteService']);
+    Route::put('services/{id}/update-alacarte-option', [ServiceController::class, 'updateAlacarteServiceOption']);
 });
 
 Route::get('room-types/cat-rooms', [RoomTypeController::class, 'getCatRooms']);

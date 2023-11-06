@@ -18,42 +18,42 @@ class ServiceOptionSeeder extends Seeder
             [
                 'service_id' => 1, // 'Spa Bath Package
                 'pet_size' => 'Small',
-                'furthur_option' => 'Short Coat',
+                'title' => 'Short Coat',
                 'price' => 30,
                 'up_price_status' => true,
             ],
             [
                 'service_id' => 1, // 'Spa Bath Package
                 'pet_size' => 'Small',
-                'furthur_option' => 'Long Coat',
+                'title' => 'Long Coat',
                 'price' => 35,
                 'up_price_status' => true,
             ],
             [
                 'service_id' => 1, // 'Spa Bath Package
                 'pet_size' => 'Medium',
-                'furthur_option' => 'Short Coat',
+                'title' => 'Short Coat',
                 'price' => 40,
                 'up_price_status' => true,
             ],
             [
                 'service_id' => 1, // 'Spa Bath Package
                 'pet_size' => 'Medium',
-                'furthur_option' => 'Long Coat',
+                'title' => 'Long Coat',
                 'price' => 50,
                 'up_price_status' => true,
             ],
             [
                 'service_id' => 1, // 'Spa Bath Package
                 'pet_size' => 'Large',
-                'furthur_option' => 'Short Coat',
+                'title' => 'Short Coat',
                 'price' => 50,
                 'up_price_status' => true,
             ],
             [
                 'service_id' => 1, // 'Spa Bath Package
                 'pet_size' => 'Large',
-                'furthur_option' => 'Long Coat',
+                'title' => 'Long Coat',
                 'price' => 60,
                 'up_price_status' => true,
             ],
@@ -63,42 +63,42 @@ class ServiceOptionSeeder extends Seeder
             [
                 'service_id' => 2, // 'Spa Bath Package
                 'pet_size' => 'Small',
-                'furthur_option' => 'Trim Only',
+                'title' => 'Trim Only',
                 'price' => 45,
                 'up_price_status' => true,
             ],
             [
                 'service_id' => 2, // 'Spa Bath Package
                 'pet_size' => 'Small',
-                'furthur_option' => 'Complete Cut',
+                'title' => 'Complete Cut',
                 'price' => 60,
                 'up_price_status' => true,
             ],
             [
                 'service_id' => 2, // 'Spa Bath Package
                 'pet_size' => 'Medium',
-                'furthur_option' => 'Trim Only',
+                'title' => 'Trim Only',
                 'price' => 55,
                 'up_price_status' => true,
             ],
             [
                 'service_id' => 2, // 'Spa Bath Package
                 'pet_size' => 'Medium',
-                'furthur_option' => 'Complete Cut',
+                'title' => 'Complete Cut',
                 'price' => 70,
                 'up_price_status' => true,
             ],
             [
                 'service_id' => 2, // 'Spa Bath Package
                 'pet_size' => 'Large',
-                'furthur_option' => 'Trim Only',
+                'title' => 'Trim Only',
                 'price' => 75,
                 'up_price_status' => true,
             ],
             [
                 'service_id' => 2, // 'Spa Bath Package
                 'pet_size' => 'Large',
-                'furthur_option' => 'Complete Cut',
+                'title' => 'Complete Cut',
                 'price' => 90,
                 'up_price_status' => true,
             ]
@@ -107,90 +107,89 @@ class ServiceOptionSeeder extends Seeder
         $optionList3 = [
             [
                 'service_id' => 3,
-                'furthur_option' => 'Brush Out',
+                'title' => 'Brush Out',
                 'price' => 10,
                 'up_price_status' => true,
             ],
             [
                 'service_id' => 3,
-                'furthur_option' => 'Breath Freshening',
+                'title' => 'Breath Freshening',
                 'price' => 8,
                 'up_price_status' => false, // Assuming it doesn't go up
             ],
             [
                 'service_id' => 3,
-                'furthur_option' => 'Nail Trim & File',
+                'title' => 'Nail Trim & File',
                 'price' => 15,
                 'up_price_status' => true,
             ],
             [
                 'service_id' => 3,
-                'furthur_option' => 'Medicated Ear Cleaning',
+                'title' => 'Medicated Ear Cleaning',
                 'price' => 10,
                 'up_price_status' => false, // Assuming it doesn't go up
             ],
             [
                 'service_id' => 3,
-                'furthur_option' => 'Flea Bath',
+                'title' => 'Flea Bath',
                 'price' => 10,
                 'up_price_status' => false, // Assuming it doesn't go up
             ],
             [
                 'service_id' => 3,
-                'furthur_option' => 'Shed Reducing Treatment',
+                'title' => 'Shed Reducing Treatment',
                 'price' => 20,
                 'up_price_status' => true,
             ],
             [
                 'service_id' => 3,
-                'furthur_option' => 'De-matting Treatment',
+                'title' => 'De-matting Treatment',
                 'price' => 15,
                 'up_price_status' => true,
             ],
             [
                 'service_id' => 3,
-                'furthur_option' => 'Paw Polish',
+                'title' => 'Paw Polish',
                 'price' => 14,
                 'up_price_status' => false, // Assuming it doesn't go up
             ],
             [
                 'service_id' => 3,
-                'furthur_option' => 'Soft Claws',
+                'title' => 'Soft Claws',
                 'price' => 25,
                 'up_price_status' => true,
             ],
             [
                 'service_id' => 3,
-                'furthur_option' => 'Special Handling',
+                'title' => 'Special Handling',
                 'price' => 10,
                 'up_price_status' => true,
             ],
             [
                 'service_id' => 3,
-                'furthur_option' => 'Hand Scissoring (15 min)',
+                'title' => 'Hand Scissoring (15 min)',
                 'price' => 20,
                 'up_price_status' => true,
             ],
             [
                 'service_id' => 3,
-                'furthur_option' => 'Shave Down',
+                'title' => 'Shave Down',
                 'price' => 20,
                 'up_price_status' => true,
             ],
             [
                 'service_id' => 3,
-                'furthur_option' => 'NEW!! Coloring – Tail, ears, feet, chest, and mohawk',
+                'title' => 'NEW!! Coloring – Tail, ears, feet, chest, and mohawk',
                 'price' => 15,
                 'up_price_status' => true,
             ],
             [
                 'service_id' => 3,
-                'furthur_option' => 'NEW!! Feather Extensions',
+                'title' => 'NEW!! Feather Extensions',
                 'price' => 10,
                 'up_price_status' => true,
             ],
         ];
-
 
         $all_options = array_merge($optionList1, $optionList2, $optionList3);
 

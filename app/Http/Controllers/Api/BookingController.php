@@ -233,6 +233,35 @@ class BookingController extends Controller
         ], 200);
     }
 
+    public function getAvailableRoomTypes($checkIn, $checkOut)
+    {
+        // Query for all room types
+        $roomTypes = RoomType::all();
+
+        $availableRoomTypes = [];
+
+        foreach ($roomTypes as $roomType) {
+            $maxRoomCount = Room::where('room_type_id', $roomType->id)->count();
+
+            // Query for conflicting booking
+            $conflictingBookings = BookingOrder::where('room_type_id', $roomType->id)
+                ->where(function ($query) use ($checkIn, $checkOut) {
+                    $query->whereBetween('check_in', [$checkIn, $checkOut])
+                        ->orWhereBetween('check_out', [$checkIn, $checkOut]);
+                })
+                ->get();
+
+            if ($conflictingBookings->count() < $maxRoomCount) {
+                $availableRoomTypes[] = $roomType;
+            }
+        }
+
+        return response()->json([
+            'message' => 'Available room types',
+            'room_types' => $availableRoomTypes,
+        ]);
+    }
+
     /**
      * Display the specified resource.
      */
