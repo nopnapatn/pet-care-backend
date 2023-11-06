@@ -18,14 +18,6 @@ class PaymentController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -38,6 +30,14 @@ class PaymentController extends Controller
         $payment->time = $request->get('time');
         $payment->date = $request->get('date');
         $payment->amount = $request->get('amount');
+
+        if ($request->hasFile('slip')) {
+            $slipPath = $request->file('slip')->store('slips', 'public');
+            $payment->slip_path = $slipPath;
+        } else {
+            return response()->json(['message' => 'No file uploaded'], 400);
+        }
+
         $payment->save();
 
         return response()->json([
@@ -55,25 +55,9 @@ class PaymentController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Payment $payment)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Payment $payment)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Payment $payment)
     {
         //
     }
