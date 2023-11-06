@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\PetController;
 use App\Http\Controllers\Api\RoomTypeController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,7 @@ Route::middleware(["auth:api"])->group(function () {
     Route::post('/payments/store', [PaymentController::class, 'store']);
     Route::post('/payments/verify', [PaymentController::class, 'verifyPayment']); //
 
+    Route::get('/users', [UserController::class, 'index']);
 
 
     Route::get('booking-orders/{id}/my-bookings', [BookingController::class, 'myBookings']);

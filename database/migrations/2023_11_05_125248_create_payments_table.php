@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('booking_order_id');
             $table->foreignId('user_id')->constrained();
             $table->string('name');
+            $table->enum('type', ['HOTEL', "SERVICE"]);
             $table->time('time');
             $table->date('date');
             $table->decimal('amount', 10, 2);
