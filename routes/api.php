@@ -2,9 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
-use App\Http\Controllers\Api\PetController;
 use App\Http\Controllers\Api\RoomTypeController;
-use App\Models\BookingOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,7 +22,6 @@ Route::middleware(["auth:api"])->group(function () {
 
     // Route::post('/rooms/booking', [BookingController::class, 'store']);
     Route::apiResource('booking', BookingController::class);
-    Route::apiResource('pets', PetController::class);
     Route::apiResource('booking-orders', BookingController::class);
     Route::apiResource('room-types', RoomTypeController::class);
     Route::post('room-types/{id}/book', [BookingController::class, 'store']);
@@ -33,11 +30,26 @@ Route::middleware(["auth:api"])->group(function () {
 
 Route::apiResource('room-types', RoomTypeController::class);
 
+Route::put(
+    'room-types/{room_type}/in-use',
+    [RoomTypeController::class, 'setInUseStatus']
+)->name('room-types.in-use');
+
+Route::put(
+    'room-types/{room_type}/maintenance',
+    [RoomTypeController::class, 'setMaintenanceStatus']
+)->name('room-types.maintenance');
+
+Route::post(
+    'room-types/image-catalogues',
+    [RoomTypeController::class, 'multipleUpload']
+)->name('room-types.image-catalogues.store');
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::group([
-
+    
     'middleware' => 'api',
     'prefix' => 'auth'
 

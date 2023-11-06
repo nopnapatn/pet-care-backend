@@ -31,7 +31,6 @@ class RoomTypeSeeder extends Seeder
                 'status' => 'AVAILABLE',
                 'available_amount' => 10,
                 'max_pets' => 2,
-                'pet_type' => 'CAT',
                 'start' => 'B'
             ],
             [

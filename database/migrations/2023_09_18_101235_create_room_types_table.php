@@ -16,12 +16,11 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2);
-            $table->string('status')->default('AVAILABLE');
+            $table->string('status')->default('AVAILABLE')->comment('AVAILABLE, IN_USE, MAINTENANCE');
             $table->string('pet_type')->default('DOG');
             $table->integer('available_amount');
             $table->integer('max_pets');
             $table->string('start');
-            //images
             //reviews
             $table->timestamps();
         });
