@@ -26,6 +26,8 @@ class PaymentController extends Controller
     {
         // $bookingOrder = BookingOrder::findOrFail($request->get('booking_order_id'));
         $bookingOrder = BookingOrder::findOrFail($request->get('booking_order_id'));
+        $bookingOrder->status = 'PENDING';
+        $bookingOrder->save();
         $payment = new Payment();
         $payment->booking_order_id = $request->get('booking_order_id');
         $payment->user_id = $request->get('user_id');
