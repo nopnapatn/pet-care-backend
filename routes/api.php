@@ -32,7 +32,6 @@ Route::middleware(["auth:api"])->group(function () {
     Route::get('booking-orders/{id}/my-bookings', [BookingController::class, 'myBookings']);
     Route::apiResource('booking', BookingController::class);
     Route::apiResource('booking-orders', BookingController::class);
-    Route::apiResource('room-types', RoomTypeController::class);
     Route::post('room-types/{id}/book', [BookingController::class, 'store']);
     Route::post('booking-orders/{id}/check-out', [BookingController::class, 'checkOut']);
 });
@@ -60,7 +59,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::group([
-    
+
     'middleware' => 'api',
     'prefix' => 'auth'
 
