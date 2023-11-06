@@ -41,9 +41,10 @@ class PaymentController extends Controller
             $image->move(public_path('images/slips'), $imageName);
             $imageURL = 'images/slips/' . $imageName;
             $payment->slip_path = $imageURL;
-        } else {
-            return response()->json(['message' => 'No file uploaded'], 400);
         }
+        // } else {
+        //     return response()->json(['message' => 'No file uploaded'], 400);
+        // }
 
         $payment->save();
         $imagePath = asset($payment->slip_path);

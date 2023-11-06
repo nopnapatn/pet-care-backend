@@ -22,7 +22,8 @@ class RoomTypeSeeder extends Seeder
                 'available_amount' => 10,
                 'max_pets' => 1,
                 'pet_type' => 'CAT',
-                'start' => 'A'
+                'start' => 'A',
+                'image_url' => 'http://localhost/images/room-type-images/room1.png'
             ],
             [
                 'title' => 'Medium Cat Room',
@@ -32,7 +33,9 @@ class RoomTypeSeeder extends Seeder
                 'available_amount' => 10,
                 'max_pets' => 2,
                 'pet_type' => 'CAT',
-                'start' => 'B'
+                'start' => 'B',
+                'image_url' => 'http://localhost/images/room-type-images/room2.png'
+
             ],
             [
                 'title' => 'Large Cat Room',
@@ -42,7 +45,9 @@ class RoomTypeSeeder extends Seeder
                 'available_amount' => 10,
                 'max_pets' => 3,
                 'pet_type' => 'CAT',
-                'start' => 'C'
+                'start' => 'C',
+                'image_url' => 'http://localhost/images/room-type-images/room3.png'
+
             ],
             [
                 'title' => 'Small Dog Room',
@@ -52,7 +57,9 @@ class RoomTypeSeeder extends Seeder
                 'available_amount' => 10,
                 'max_pets' => 1,
                 'pet_type' => 'DOG',
-                'start' => 'D'
+                'start' => 'D',
+                'image_url' => 'http://localhost/images/room-type-images/room1.png'
+
             ],
             [
                 'title' => 'Medium Dog Room',
@@ -62,7 +69,9 @@ class RoomTypeSeeder extends Seeder
                 'available_amount' => 10,
                 'max_pets' => 2,
                 'pet_type' => 'DOG',
-                'start' => 'E'
+                'start' => 'E',
+                'image_url' => 'http://localhost/images/room-type-images/room2.png'
+
             ],
 
             [
@@ -73,7 +82,9 @@ class RoomTypeSeeder extends Seeder
                 'available_amount' => 10,
                 'max_pets' => 3,
                 'pet_type' => 'DOG',
-                'start' => 'F'
+                'start' => 'F',
+                'image_url' => 'http://localhost/images/room-type-images/room3.png'
+
             ],
 
         ];

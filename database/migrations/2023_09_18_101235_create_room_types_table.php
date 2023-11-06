@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('available_amount');
             $table->integer('max_pets');
             $table->string('start');
+            $table->string('image_url')->nullable();
             //reviews
             $table->timestamps();
         });
