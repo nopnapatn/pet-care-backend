@@ -223,6 +223,16 @@ class BookingController extends Controller
         return $request->validate($rules, $messages);
     }
 
+    public function myBookings($id)
+    {
+        $user = auth()->user();
+        // $user = User::find($id);
+        $bookingOrders = BookingOrder::where('user_id', $user->id)->get();
+        return response()->json([
+            'booking_orders' => $bookingOrders,
+        ], 200);
+    }
+
     /**
      * Display the specified resource.
      */

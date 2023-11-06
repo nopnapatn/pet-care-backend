@@ -20,14 +20,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::middleware(["auth:api"])->group(function () {
 
     // Route::post('/rooms/booking', [BookingController::class, 'store']);
     // Route::apiResource('payments', [PaymentController::class]);
-    Route::post('/payments{id}/store', [PaymentController::class, 'store']);
+    Route::post('/payments/store', [PaymentController::class, 'store']);
 
-    Route::apiResource('booking', BookingController::class);
+    Route::get('booking-orders/{id}/my-bookings', [BookingController::class, 'myBookings']);
     Route::post('room-types/{id}/book', [BookingController::class, 'store']);
     Route::post('booking-orders/{id}/check-out', [BookingController::class, 'checkOut']);
     Route::apiResource('booking-orders', BookingController::class);

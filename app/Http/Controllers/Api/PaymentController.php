@@ -28,11 +28,11 @@ class PaymentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, $id)
+    public function store(Request $request)
     {
-        $bookingOrder = BookingOrder::findOrFail($id);
+        $bookingOrder = BookingOrder::findOrFail($request->get('booking_order_id'));
         $payment = new Payment();
-        $payment->booking_order_id = $bookingOrder->id;
+        $payment->booking_order_id = $request->get('booking_order_id');
         $payment->user_id = $request->get('user_id');
         $payment->name = $request->get('name');
         $payment->time = $request->get('time');
