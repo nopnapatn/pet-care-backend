@@ -40,18 +40,41 @@ class BookingOrderSeeder extends Seeder
             ];
             $bookingOrder = app(BookingController::class)->createBooking($request, $user);
 
+            // if ($bookingOrder != null) {
+            //     if ($currentDate >= $check_in && $currentDate <= $check_out) {
+            //         $status = 'IN_USE';
+            //     } elseif ($currentDate > $check_out) {
+            //         $status = 'COMPLETE';
+            //         $request = Request::create('booking-orders/' . $bookingOrder->id . '/check-out', 'POST', [
+            //             'booking_order_id' => $bookingOrder->id,
+            //         ]); 
+            //         // app(BookingController::class)->checkOut($bookingOrder->id);
+            //     } else {
+            //         $status = 'WAITING';
+            //     }
+            //     $bookingOrder->status = $status;
+            //     $bookingOrder->save();
+            // }
+
             if ($bookingOrder != null) {
+                // Determine the status based on the current date
+                $status = 'WAITING'; // Default status
+
                 if ($currentDate >= $check_in && $currentDate <= $check_out) {
                     $status = 'IN_USE';
-                } elseif ($currentDate > $check_out) {
+                } else if ($currentDate > $check_out) {
                     $status = 'COMPLETE';
                     $request = Request::create('booking-orders/' . $bookingOrder->id . '/check-out', 'POST', [
                         'booking_order_id' => $bookingOrder->id,
                     ]);
-                    // app(BookingController::class)->checkOut($bookingOrder->id);
-                } else {
-                    $status = 'WAITING';
+                } elseif ($currentDate > $check_in) {
+                    $status = 'PENDING'; // The user has checked in but not checked out yet
+                } elseif ($currentDate > $check_out) {
+                    $status = 'VERIFIED'; // The staff has verified the checkout
+                } elseif ($currentDate < $check_in) {
+                    $status = 'CANCELED'; // The booking is canceled before check-in
                 }
+
                 $bookingOrder->status = $status;
                 $bookingOrder->save();
             }

@@ -18,7 +18,6 @@ class RoomSeeder extends Seeder
         $roomTypes = RoomType::all();
 
         foreach ($roomTypes as $roomType) {
-            // $type = RoomType::where('id', $roomType['type'])->first();
             for ($i = 1; $i <= $roomType->available_amount; $i++) {
                 $room = new Room();
                 $room->room_type_id = $roomType->id;
@@ -27,5 +26,7 @@ class RoomSeeder extends Seeder
                 $room->save();
             }
         }
+
+        
     }
 }
