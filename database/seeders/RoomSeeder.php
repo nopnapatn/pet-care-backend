@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Enums\HotelStatus;
+use App\Models\Enums\RoomStatus;
 use App\Models\Room;
 use App\Models\RoomType;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -23,7 +24,7 @@ class RoomSeeder extends Seeder
                 $room = new Room();
                 $room->room_type_id = $roomType->id;
                 $room->number = $roomType->start . $i;
-                $room->status = 'AVAILABLE';
+                $room->status = RoomStatus::AVAILABLE;
                 $room->save();
             }
         }

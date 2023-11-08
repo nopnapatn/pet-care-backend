@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\BookingOrder;
 use App\Models\Enums\BookingOrderStatus;
+use App\Models\Enums\RoomStatus;
 use App\Models\Room;
 use App\Models\RoomType;
 use App\Models\User;
@@ -126,16 +127,12 @@ class BookingController extends Controller
     {
         $roomType = RoomType::find($roomTypeId);
         // Find the first available room
-        $room = $roomType->rooms()->where('status', 'AVAILABLE')->first();
+        $room = $roomType->rooms()->where('status', RoomStatus::AVAILABLE)->first();
         if (!$room) {
             return response()->json([
                 'message' => 'No rooms available',
             ], 400);
         }
-        $room->status = 'UNAVAILABLE';
-        $room->user_id = $userId;
-        $room->save();
-
         // Update the room type details
         $roomType->available_amount = $roomType->getAvailableRoomsCount();
         $roomType->save();
@@ -178,9 +175,9 @@ class BookingController extends Controller
         return $bookingOrders;
     }
 
-    public function checkIn(Request $request)
+    public function checkIn($id)
     {
-        $bookingOrder = BookingOrder::find($request->get('booking_order_id'));
+        $bookingOrder = BookingOrder::find($id);
         if (!$bookingOrder) {
             return response()->json([
                 'message' => 'Booking order not found',
@@ -189,8 +186,9 @@ class BookingController extends Controller
         $bookingOrder->status = BookingOrderStatus::IN_USE;
         $bookingOrder->save();
 
-        $room = $bookingOrder->room;
-        $room->status = 'IN_USE';
+        $room = Room::where('number', $bookingOrder->room_number)->first();
+        $room->status = RoomStatus::INUSE;
+        $room->user_id = $bookingOrder->user_id;
         $room->save();
 
         $roomType = $room->roomType;
@@ -203,19 +201,19 @@ class BookingController extends Controller
         ], 201);
     }
 
-    public function checkOut(Request $request)
+    public function checkOut($id)
     {
-        $bookingOrder = BookingOrder::find($request->get('booking_order_id'));
+        $bookingOrder = BookingOrder::find($id);
         if (!$bookingOrder) {
             return response()->json([
                 'message' => 'Booking order not found',
-            ], 400);
+            ], 404);
         }
-        $bookingOrder->status = 'COMPLETE';
+        $bookingOrder->status = BookingOrderStatus::COMPLETED;
         $bookingOrder->save();
 
-        $room = $bookingOrder->room;
-        $room->status = 'AVAILABLE';
+        $room = Room::where('number', $bookingOrder->room_number)->first();
+        $room->status = RoomStatus::AVAILABLE;
         $room->user_id = null;
         $room->save();
 
@@ -258,12 +256,9 @@ class BookingController extends Controller
 
     public function myBookings($id)
     {
-        $user = auth()->user();
-        // $user = User::find($id);
+        $user = User::find($id);
         $bookingOrders = BookingOrder::where('user_id', $user->id)->get();
-        return response()->json([
-            'booking_orders' => $bookingOrders,
-        ], 200);
+        return $bookingOrders;
     }
 
     public function getBookingOrder($id)
@@ -277,45 +272,33 @@ class BookingController extends Controller
     public function getWaitingBookingOrders()
     {
         $bookingOrders = BookingOrder::where('status', 'BOOKED')->get();
-        return response()->json([
-            'booking_orders' => $bookingOrders,
-        ], 200);
+        return $bookingOrders;
     }
 
     public function getPendingBookingOrders()
     {
         $bookingOrders = BookingOrder::where('status', 'PENDING')->get();
-        return response()->json([
-            'booking_orders' => $bookingOrders,
-        ], 200);
+        return $bookingOrders;
     }
     public function getVerifiedBookingOrders()
     {
         $bookingOrders = BookingOrder::where('status', 'VERIFIED')->get();
-        return response()->json([
-            'booking_orders' => $bookingOrders,
-        ], 200);
+        return $bookingOrders;
     }
     public function getInUseBookingOrders()
     {
         $bookingOrders = BookingOrder::where('status', 'IN_USE')->get();
-        return response()->json([
-            'booking_orders' => $bookingOrders,
-        ], 200);
+        return $bookingOrders;
     }
     public function getCompleteBookingOrders()
     {
-        $bookingOrders = BookingOrder::where('status', 'COMPLETE')->get();
-        return response()->json([
-            'booking_orders' => $bookingOrders,
-        ], 200);
+        $bookingOrders = BookingOrder::where('status', 'COMPLETED')->get();
+        return $bookingOrders;
     }
     public function getCanceledBookingOrders()
     {
         $bookingOrders = BookingOrder::where('status', 'CANCELED')->get();
-        return response()->json([
-            'booking_orders' => $bookingOrders,
-        ], 200);
+        return $bookingOrders;
     }
     /**
      * Display the specified resource.

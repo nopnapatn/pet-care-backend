@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('room_type_id')->constrained();
             $table->foreignId('user_id')->nullable()->constrained();
             $table->foreignId('booking_order_id')->nullable();
-            $table->string('status')->default('AVAILABLE')->comment('AVAILABLE, IN_USE, MAINTENANCE');
-            $table->string('number');
+            $table->enum('status', ['AVAILABLE', 'IN_USE', 'MAINTENANCE'])->default('AVAILABLE');
+            $table->string('number')->unique();
             $table->timestamps();
         });
     }

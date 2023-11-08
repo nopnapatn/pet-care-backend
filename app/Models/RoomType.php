@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Enums\RoomStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,7 +16,7 @@ class RoomType extends Model
 
     public function getAvailableRoomsCount()
     {
-        return $this->rooms()->where('status', 'AVAILABLE')->count();
+        return $this->rooms()->where('status', RoomStatus::AVAILABLE)->count();
     }
 
     public function hasAvailableRooms()

@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Http\Controllers\Api\BookingController;
 use App\Models\BookingOrder;
+use App\Models\Enums\BookingOrderStatus;
+use App\Models\Enums\RoomStatus;
 use App\Models\Room;
 use App\Models\RoomType;
 use App\Models\User;
@@ -42,13 +44,13 @@ class BookingOrderSeeder extends Seeder
 
             if ($bookingOrder != null) {
                 if ($currentDate >= $check_in && $currentDate <= $check_out) {
-                    $status = 'IN_USE';
+                    $status = BookingOrderStatus::IN_USE;
+                    $bookingOrder->room->status = RoomStatus::INUSE;
                 } elseif ($currentDate > $check_out) {
-                    $status = 'COMPLETE';
+                    $status = BookingOrderStatus::COMPLETED;
                     $request = Request::create('booking-orders/' . $bookingOrder->id . '/check-out', 'POST', [
                         'booking_order_id' => $bookingOrder->id,
                     ]);
-                    // app(BookingController::class)->checkOut($bookingOrder->id);
                 } else {
                     $status = 'WAITING';
                 }

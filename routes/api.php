@@ -27,7 +27,7 @@ Route::middleware(["auth:api"])->group(function () {
     // Route::post('/rooms/booking', [BookingController::class, 'store']);
     // Route::apiResource('payments', [PaymentController::class]);
     Route::post('/payments/store', [PaymentController::class, 'store']);
-    Route::post('/payments/verify', [PaymentController::class, 'verifyPayment']); //
+    Route::put('/payments/verify', [PaymentController::class, 'verifyPayment']); //
 
     Route::get('/users', [UserController::class, 'index']);
 
@@ -35,8 +35,8 @@ Route::middleware(["auth:api"])->group(function () {
 
     Route::get('booking-orders/{id}/my-bookings', [BookingController::class, 'myBookings']);
     Route::post('room-types/{id}/book', [BookingController::class, 'store']);
-    Route::post('booking-orders/{id}/check-in', [BookingController::class, 'checkIn']); // 
-    Route::post('booking-orders/{id}/check-out', [BookingController::class, 'checkOut']); // 
+    Route::put('booking-orders/{id}/check-in', [BookingController::class, 'checkIn']); // 
+    Route::put('booking-orders/{id}/check-out', [BookingController::class, 'checkOut']); // 
 
     Route::group(['prefix' => 'booking-orders'], function () {
         Route::get('waiting', [BookingController::class, 'getWaitingBookingOrders']);

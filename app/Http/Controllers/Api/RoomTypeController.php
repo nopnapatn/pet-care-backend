@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Enums\InUseStatus;
 use App\Models\Enums\MaintenanceStatus;
+use App\Models\Enums\RoomStatus;
 use App\Models\ImageCatalogue;
 use App\Models\Room;
 use App\Models\RoomType;
@@ -76,7 +77,7 @@ class RoomTypeController extends Controller
             $room = new Room();
             $room->room_type_id = $roomType->id;
             $room->number = $request->get("start") . $i;
-            $room->status = 'AVAILABLE';
+            $room->status = RoomStatus::AVAILABLE;
             $room->save();
         }
 
