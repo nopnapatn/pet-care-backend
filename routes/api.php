@@ -28,7 +28,8 @@ Route::middleware(["auth:api"])->group(function () {
     // Route::apiResource('payments', [PaymentController::class]);
     Route::get('/payments/{id}', [PaymentController::class, 'show']);
     Route::post('/payments/store', [PaymentController::class, 'store']);
-    Route::put('/payments/verify', [PaymentController::class, 'verifyPayment']); //
+    Route::put('/payments/{id}/verify', [PaymentController::class, 'verifyPayment']); //
+    Route::put('/payments/{id}/reject', [PaymentController::class, 'rejectPayment']); //
 
     Route::get('/users', [UserController::class, 'index']);
 

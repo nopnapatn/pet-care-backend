@@ -97,6 +97,7 @@ class BookingController extends Controller
         $checkOut = new \DateTime($data['check_out']);
         // Calculate the number of nights
         $nights = $checkIn->diff($checkOut)->format('%a');
+        $days = $nights + 1;
 
         $room = $this->book($roomType->id, $user->id);
         if ($room instanceof Room) {
@@ -109,7 +110,7 @@ class BookingController extends Controller
             $bookingOrder->check_in = $checkIn;
             $bookingOrder->check_out = $checkOut;
             $bookingOrder->pets_amount = $data['pets_amount'];
-            $bookingOrder->total_price = $this->calculateTotalPrice($roomType->price, $data['pets_amount'], $nights);
+            $bookingOrder->total_price = $this->calculateTotalPrice($roomType->price, $days);
             if (isset($data['owner_instruction'])) {
                 $bookingOrder->owner_instruction = $data['owner_instruction'];
             }
@@ -163,9 +164,9 @@ class BookingController extends Controller
         return true;
     }
 
-    public function calculateTotalPrice($price, $petsAmount, $nights)
+    public function calculateTotalPrice($price, $days)
     {
-        return $price * $petsAmount * $nights;
+        return $price * $days;
     }
 
     public function getBookingOrders()
@@ -232,7 +233,7 @@ class BookingController extends Controller
         $rules = [
             'room_type_id' => 'required|exists:room_types,id',
             'check_in' => 'required|date',
-            'check_out' => 'required|date|after:check_in',
+            'check_out' => 'required|date',
             'pets_amount' => 'required|integer|min:1',
             'owner_instruction' => 'nullable|string',
         ];
@@ -278,7 +279,8 @@ class BookingController extends Controller
 
     public function getPendingBookingOrders()
     {
-        $bookingOrders = BookingOrder::where('status', BookingOrderStatus::PENDING)->get();
+        $bookingOrders = BookingOrder::with('payment')->where('status', BookingOrderStatus::PENDING)->get();
+
         return $bookingOrders;
     }
     public function getVerifiedBookingOrders()
