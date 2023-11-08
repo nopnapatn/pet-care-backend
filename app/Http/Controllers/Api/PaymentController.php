@@ -41,15 +41,15 @@ class PaymentController extends Controller
             $image = $request->file('slip');
             $imageName = $payment->name . '_' . time() . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('images/slips'), $imageName);
-            $imageURL = 'images/slips/' . $imageName;
-            $payment->slip_path = $imageURL;
+            $imagePath = 'images/slips/' . $imageName;
         }
         // } else {
         //     return response()->json(['message' => 'No file uploaded'], 400);
         // }
 
+        $imageURL = asset($imagePath);
+        $payment->slip_path = $imageURL;
         $payment->save();
-        $imagePath = asset($payment->slip_path);
         if ($payment->save()) {
             return response()->json(['message' => 'Payment created successfully', 'payment' => $payment, 'imagePath' => $imagePath], 200);
         } else {
