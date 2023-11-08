@@ -80,9 +80,11 @@ class PaymentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Payment $payment)
+    public function show($id)
     {
-        //
+        $payment = Payment::find($id);
+        $slip_url = asset($payment->slip_path);
+        return $payment;
     }
 
     /**

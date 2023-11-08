@@ -9,4 +9,5 @@ enum BookingOrderStatus: string
     case VERIFIED = 'VERIFIED';
     case IN_USE = 'IN_USE';
     case COMPLETED = 'COMPLETED';
+    case CANCELED = 'CANCELED';
 }

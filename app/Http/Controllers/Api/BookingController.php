@@ -187,7 +187,7 @@ class BookingController extends Controller
         $bookingOrder->save();
 
         $room = Room::where('number', $bookingOrder->room_number)->first();
-        $room->status = RoomStatus::INUSE;
+        $room->status = RoomStatus::IN_USE;
         $room->user_id = $bookingOrder->user_id;
         $room->save();
 
@@ -257,7 +257,8 @@ class BookingController extends Controller
     public function myBookings($id)
     {
         $user = User::find($id);
-        $bookingOrders = BookingOrder::where('user_id', $user->id)->get();
+        $bookingOrders = BookingOrder::with('roomType')->where('user_id', $user->id)->get();
+
         return $bookingOrders;
     }
 
@@ -271,33 +272,33 @@ class BookingController extends Controller
 
     public function getWaitingBookingOrders()
     {
-        $bookingOrders = BookingOrder::where('status', 'BOOKED')->get();
+        $bookingOrders = BookingOrder::where('status', BookingOrderStatus::WAITING)->get();
         return $bookingOrders;
     }
 
     public function getPendingBookingOrders()
     {
-        $bookingOrders = BookingOrder::where('status', 'PENDING')->get();
+        $bookingOrders = BookingOrder::where('status', BookingOrderStatus::PENDING)->get();
         return $bookingOrders;
     }
     public function getVerifiedBookingOrders()
     {
-        $bookingOrders = BookingOrder::where('status', 'VERIFIED')->get();
+        $bookingOrders = BookingOrder::where('status', BookingOrderStatus::VERIFIED)->get();
         return $bookingOrders;
     }
     public function getInUseBookingOrders()
     {
-        $bookingOrders = BookingOrder::where('status', 'IN_USE')->get();
+        $bookingOrders = BookingOrder::where('status', BookingOrderStatus::IN_USE)->get();
         return $bookingOrders;
     }
     public function getCompleteBookingOrders()
     {
-        $bookingOrders = BookingOrder::where('status', 'COMPLETED')->get();
+        $bookingOrders = BookingOrder::where('status', BookingOrderStatus::COMPLETED)->get();
         return $bookingOrders;
     }
     public function getCanceledBookingOrders()
     {
-        $bookingOrders = BookingOrder::where('status', 'CANCELED')->get();
+        $bookingOrders = BookingOrder::where('status', BookingOrderStatus::CANCELED)->get();
         return $bookingOrders;
     }
     /**

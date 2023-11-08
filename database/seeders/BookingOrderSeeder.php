@@ -45,7 +45,7 @@ class BookingOrderSeeder extends Seeder
             if ($bookingOrder != null) {
                 if ($currentDate >= $check_in && $currentDate <= $check_out) {
                     $status = BookingOrderStatus::IN_USE;
-                    $bookingOrder->room->status = RoomStatus::INUSE;
+                    $bookingOrder->room->status = RoomStatus::IN_USE;
                 } elseif ($currentDate > $check_out) {
                     $status = BookingOrderStatus::COMPLETED;
                     $request = Request::create('booking-orders/' . $bookingOrder->id . '/check-out', 'POST', [

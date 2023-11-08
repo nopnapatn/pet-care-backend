@@ -14,6 +14,11 @@ class RoomType extends Model
         return $this->hasMany(Room::class);
     }
 
+    public function bookingOrders()
+    {
+        return $this->belongsToMany(BookingOrder::class);
+    }
+
     public function getAvailableRoomsCount()
     {
         return $this->rooms()->where('status', RoomStatus::AVAILABLE)->count();

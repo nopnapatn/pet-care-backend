@@ -30,6 +30,11 @@ class BookingOrder extends Model
         return $this->belongsTo(Room::class);
     }
 
+    public function roomType()
+    {
+        return $this->belongsTo(RoomType::class);
+    }
+
     public function payment()
     {
         return $this->hasOne(Payment::class);
