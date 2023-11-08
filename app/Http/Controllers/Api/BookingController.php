@@ -150,6 +150,9 @@ class BookingController extends Controller
 
         $maxRoomCount = Room::where('room_type_id', $roomType->id)->count();
 
+        $checkIn = new \DateTime($checkIn);
+        $checkOut = new \DateTime($checkOut);
+
         // Query for conflicting booking
         $conflictingBookings = BookingOrder::where('room_type_id', $roomType->id)
             ->where(function ($query) use ($checkIn, $checkOut) {

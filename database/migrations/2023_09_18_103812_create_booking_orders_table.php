@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('pets_amount');
             $table->decimal('total_price', 10, 2);
             $table->text('owner_instruction')->nullable();
-            $table->enum('status', ['WAITING', 'PENDING', 'VERIFIED', 'IN_USE', 'COMPLETED', 'CANCELED'])->defualt('WAITING');
+            $table->enum('status', ['WAITING', 'PENDING', 'VERIFIED', 'IN_USE', 'COMPLETED', 'CANCELED'])->default('WAITING');
             $table->timestamps();
         });
     }
