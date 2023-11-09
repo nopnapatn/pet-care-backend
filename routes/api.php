@@ -66,6 +66,7 @@ Route::get('service-orders/get-user-current-order', [ServiceOrderController::cla
 // Profile
 Route::get('profile/{id}', [ProfileController::class, 'show']);
 Route::put('profile/{id}', [ProfileController::class, 'update']);
+Route::put('profile/{id}/change-password', [ProfileController::class, 'changePassword']);
 
 Route::post('room-types/get-available-types', [RoomTypeController::class, 'getAvailableRoomTypes']);
 Route::get('room-types/cat-rooms', [RoomTypeController::class, 'getCatRooms']);

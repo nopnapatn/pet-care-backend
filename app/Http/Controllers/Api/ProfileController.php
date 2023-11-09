@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
@@ -45,16 +44,22 @@ class ProfileController extends Controller
 
         // Validate the request data
         $request->validate([
-            'email' => ['string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
-            'firstName' => ['string', 'max:255'],
-            'lastName' => ['string', 'max:255'],
+            'firstName' => ['string', 'max:255', 'nullable'],
+            'lastName' => ['string', 'max:255', 'nullable'],
             'phone' => ['string', 'nullable'],
         ]);
 
-        $user->email = $request->email;
-        $user->first_name = $request->firstName;
-        $user->last_name = $request->lastName;
-        $user->phone_number = $request->phone;
+        if (isset($request->firstName)) {
+            $user->first_name = $request->firstName;
+        }
+
+        if (isset($request->lastName)) {
+            $user->last_name = $request->lastName;
+        }
+
+        if (isset($request->phone)) {
+            $user->phone_number = $request->phone;
+        }
 
         $user->save();
 
@@ -66,5 +71,44 @@ class ProfileController extends Controller
         ];
 
         return response()->json($userData);
+    }
+
+    public function changePassword(Request $request, $id)
+    {
+        // Retrieve the user by ID from the database
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        // Validate the request data
+        $request->validate([
+            'current_password' => ['required', 'string'],
+            'new_password' => ['required', 'string', 'min:8'],
+        ]);
+
+        // Check if the current password matches the one in the database
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json(['error' => 'Current password is incorrect'], 400);
+        }
+
+        // Check if the new password and confirm new password match
+        if ($request->new_password !== $request->confirm_password) {
+            return response()->json(['error' => 'New password and confirm new password must be the same'], 400);
+        }
+
+        // Check if the new password is the same as the current password
+        if ($request->current_password == $request->new_password) {
+            return response()->json(['error' => 'New password cannot be the same as current password'], 400);
+        }
+
+        // Update the password with the new one
+        $user->password = bcrypt($request->new_password);
+
+        // Save the changes to the user model
+        $user->save();
+
+        return response()->json(['message' => 'Password changed successfully']);
     }
 }
