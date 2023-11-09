@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\PetController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\RoomTypeController;
 use App\Http\Controllers\Api\ServiceItemController;
 use App\Http\Controllers\Api\ServiceOrderController;
@@ -62,6 +63,10 @@ Route::post('service-orders/init-service-order', [ServiceOrderController::class,
 Route::get('service-orders/is-available', [ServiceOrderController::class, 'isAvailable']);
 Route::get('service-orders/get-user-current-order', [ServiceOrderController::class, 'getUserCurrentOrder']);
 
+// Profile
+Route::get('profile/{id}', [ProfileController::class, 'show']);
+Route::put('profile/{id}', [ProfileController::class, 'update']);
+
 Route::post('room-types/get-available-types', [RoomTypeController::class, 'getAvailableRoomTypes']);
 Route::get('room-types/cat-rooms', [RoomTypeController::class, 'getCatRooms']);
 Route::get('room-types/dog-rooms', [RoomTypeController::class, 'getDogRooms']);
@@ -69,10 +74,6 @@ Route::put('room-types/{room_type}/in-use', [RoomTypeController::class, 'setInUs
 Route::put('room-types/{room_type}/maintenance', [RoomTypeController::class, 'setMaintenanceStatus'])->name('room-types.maintenance');
 Route::post('room-types/image-catalogues', [RoomTypeController::class, 'multipleUpload'])->name('room-types.image-catalogues.store');
 Route::apiResource('room-types', RoomTypeController::class);
-
-
-
-
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
