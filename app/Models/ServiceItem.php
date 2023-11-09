@@ -5,20 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ServiceOption extends Model
+class ServiceItem extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'service_id',
-        'pet_size',
-        'furthur_option',
+        'service_name',
+        'type',
+        'option',
+        'breed_size',
         'price',
-        'up_price_status',
     ];
 
-    public function service()
+    public function serviceOrder()
     {
-        return $this->belongsTo(Service::class);
+        return $this->belongsToMany(ServiceOrder::class);
     }
 }

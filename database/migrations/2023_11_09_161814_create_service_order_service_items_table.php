@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('service_options', function (Blueprint $table) {
+        Schema::create('service_order_service_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('service_id')->constrained()->onDelete('cascade');
-            $table->string('pet_size')->nullable();
-            $table->string('furthur_option')->nullable();
-            $table->integer('price');
-            $table->boolean('up_price_status');
+            $table->foreignId('service_order_id')->constrained();
+            $table->foreignId('service_item_id')->constrained();
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('service_options');
+        Schema::dropIfExists('service_order_service_items');
     }
 };
