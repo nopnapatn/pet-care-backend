@@ -40,7 +40,11 @@ class RoomTypeController extends Controller
         $endDate = $request->input('end_date');
         $petsAmount = $request->input('pets_amount');
 
-        $roomTypes = RoomType::where('max_pets', '>=', $petsAmount)->get();
+        // $roomTypes = RoomType::where('max_pets', '>=', $petsAmount)->get();
+        $roomTypes = RoomType::where(function ($query) use ($petsAmount) {
+            $query->whereRaw('CAST(max_pets AS UNSIGNED) >= ?', [$petsAmount]);
+        })->get();
+
         $availableRoomTypes = [];
         foreach ($roomTypes as $roomType) {
             if (app(BookingController::class)->checkRoomAvailability($roomType, $startDate, $endDate)) {
