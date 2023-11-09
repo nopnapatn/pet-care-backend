@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BookingOrder;
 use App\Models\Enums\BookingOrderStatus;
 use App\Models\Payment;
+use App\Models\ServiceOrder;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
@@ -56,6 +57,40 @@ class PaymentController extends Controller
         } else {
             return response()->json(['message' => 'Payment created failed'], 400);
         }
+    }
+
+    public function serviceStore(Request $request) {
+        // $bookingOrder = BookingOrder::findOrFail($request->get('booking_order_id'));
+        $serviceOrder = ServiceOrder::findOrFail($request->get('service_order_id'));
+        $serviceOrder->status = 'PENDING';
+        $serviceOrder->save();
+        $payment = new Payment();
+        $payment->service_order_id = $request->get('service_order_id');
+        $payment->user_id = $request->get('user_id');
+        $payment->name = $request->get('name');
+        $payment->time = $request->get('time');
+        $payment->date = $request->get('date');
+        $payment->type = $request->get('type');
+        $payment->amount = $request->get('amount');
+
+        if ($request->hasFile('slip')) {
+            $image = $request->file('slip');
+            $imageName = $payment->name . '_' . time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images/slips'), $imageName);
+            $imagePath = 'images/slips/' . $imageName;
+        }
+        // } else {
+        //     return response()->json(['message' => 'No file uploaded'], 400);
+        // }
+
+        $imageURL = asset($imagePath);
+        $payment->slip_path = $imageURL;
+        $payment->save();
+        if ($payment->save()) {
+            return response()->json(['message' => 'Payment created successfully', 'payment' => $payment, 'imagePath' => $imagePath], 200);
+        } else {
+            return response()->json(['message' => 'Payment created failed'], 400);
+        } 
     }
 
     public function verifyPayment($id)

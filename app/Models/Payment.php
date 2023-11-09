@@ -26,4 +26,9 @@ class Payment extends Model
     {
         return $this->belongsTo(BookingOrder::class);
     }
+
+    public function serviceOrder()
+    {
+        return $this->belongsTo(ServiceOrder::class);
+    }
 }
