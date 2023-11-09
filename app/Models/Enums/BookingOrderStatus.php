@@ -10,4 +10,24 @@ enum BookingOrderStatus: string
     case IN_USE = 'IN_USE';
     case COMPLETED = 'COMPLETED';
     case CANCELED = 'CANCELED';
+
+    public static function randomPast()
+    {
+        $statuses = [
+            self::COMPLETED,
+            self::IN_USE,
+        ];
+        return $statuses[array_rand($statuses)];
+    }
+
+    public static function randomFuture()
+    {
+        $statuses = [
+            self::CANCELED,
+            self::PENDING,
+            self::VERIFIED,
+            self::WAITING,
+        ];
+        return $statuses[array_rand($statuses)];
+    }
 }

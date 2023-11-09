@@ -17,19 +17,25 @@ class BookingController extends Controller
     /**
      * Display a listing of the resource.
      */
+    // public function index()
+    // {
+    //     $bookingKey = "allBookingOrders";
+    //     $value = Redis::get($bookingKey);
+    //     if (empty($value)) {
+    //         // BookingOrders with user name by joining the users table with booking_orders table
+    //         $bookingOrders = $bookingOrders = BookingOrder::select('booking_orders.*', 'users.first_name as user_name')
+    //             ->join('users', 'booking_orders.user_id', '=', 'users.id')
+    //             ->get();
+    //         Redis::set($bookingKey, json_encode($bookingOrders));
+    //     } else {
+    //         $bookingOrders = json_decode($value);
+    //     }
+    //     return $bookingOrders;
+    // }
+
     public function index()
     {
-        $bookingKey = "allBookingOrders";
-        $value = Redis::get($bookingKey);
-        if (empty($value)) {
-            // BookingOrders with user name by joining the users table with booking_orders table
-            $bookingOrders = $bookingOrders = BookingOrder::select('booking_orders.*', 'users.first_name as user_name')
-                ->join('users', 'booking_orders.user_id', '=', 'users.id')
-                ->get();
-            Redis::set($bookingKey, json_encode($bookingOrders));
-        } else {
-            $bookingOrders = json_decode($value);
-        }
+        $bookingOrders = BookingOrder::all();
         return $bookingOrders;
     }
 

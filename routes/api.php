@@ -36,6 +36,7 @@ Route::middleware(["auth:api"])->group(function () {
 
     Route::get('users', [UserController::class, 'index']);
 
+    Route::get('booking-orders', [BookingController::class, 'index']);
     Route::get('booking-orders/{id}/my-bookings', [BookingController::class, 'myBookings']);
     Route::post('room-types/{id}/book', [BookingController::class, 'store']);
     Route::put('booking-orders/{id}/check-in', [BookingController::class, 'checkIn']); // 
