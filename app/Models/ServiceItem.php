@@ -19,6 +19,6 @@ class ServiceItem extends Model
 
     public function serviceOrder()
     {
-        return $this->belongsTo(ServiceOrder::class);
+        return $this->belongsToMany(ServiceOrder::class);
     }
 }

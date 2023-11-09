@@ -20,12 +20,37 @@ class ServiceOrderController extends Controller
     {
         $serviceOrder = ServiceOrder::create([
             'user_id' => $request->user_id,
-            'service_item_id' => $request->service_item_id,
             'service_date' => $request->service_date,
             'total_price' => $request->total_price,
             'pet_type' => $request->pet_type,
-            'status' => "WAITING"
+            'status' => "WAITING",
         ]);
+
+        // Merge packageID and alacarteIDs into a single array
+        $serviceItemIDs = array_merge([$request->package_id], explode(',', $request->alacarte_ids));
+
+        // Attach the service items to the service order
+        $serviceOrder->serviceItems()->sync($serviceItemIDs);
+
+        return $serviceOrder;
+    }
+
+    public function isAvailable(Request $request) {
+
+        $serviceOrders = ServiceOrder::where('service_date', $request->service_date)
+            ->get();
+
+        if (count($serviceOrders) == 5) {
+            return response()->json(false);
+        } else {
+            return response()->json(true);
+        }
+    }
+
+    public function getUserCurrentOrder(Request $request) {
+        $serviceOrder = ServiceOrder::where('user_id', $request->user_id)
+            ->where('status', 'WAITING')
+            ->first();
 
         return response()->json($serviceOrder);
     }

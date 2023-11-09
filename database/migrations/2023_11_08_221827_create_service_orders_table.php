@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('service_orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('service_item_id')->constrained();
+            // $table->foreignId('service_item_id')->constrained();
             $table->string('service_date');
             $table->double('total_price');
             $table->enum('pet_type', ['DOG', 'CAT']);
