@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\BookingOrder;
+use App\Models\Enums\BookingOrderStatus;
 use App\Models\ServiceOrder;
 use Illuminate\Http\Request;
 
@@ -35,7 +37,8 @@ class ServiceOrderController extends Controller
         return $serviceOrder;
     }
 
-    public function isAvailable(Request $request) {
+    public function isAvailable(Request $request)
+    {
 
         $serviceOrders = ServiceOrder::where('service_date', $request->service_date)
             ->get();
@@ -47,11 +50,10 @@ class ServiceOrderController extends Controller
         }
     }
 
-    public function getUserCurrentOrder(Request $request) {
-        $serviceOrder = ServiceOrder::where('user_id', $request->user_id)
-            ->where('status', 'WAITING')
-            ->first();
+    public function getUserCurrentOrder(Request $request)
+    {
+        $serviceOrders = ServiceOrder::where('user_id', $request->input("user_id"))->get();
 
-        return response()->json($serviceOrder);
+        return $serviceOrders;
     }
 }
