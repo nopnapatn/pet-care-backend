@@ -3,17 +3,26 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Service;
+use App\Models\ServiceItem;
 use Illuminate\Http\Request;
 
-class ServiceController extends Controller
+class ServiceItemController extends Controller
 {
+
+    public function getServiceItemBySize(Request $request) {
+        $serviceItems = ServiceItem::where(function($query) use ($request) {
+            $query->where('breed_size', $request->breed_size)
+                  ->orWhere('type', 'alacarte');
+        })->get();
+
+        return response()->json($serviceItems);
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        
+
     }
 
     /**
@@ -27,7 +36,7 @@ class ServiceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Service $service)
+    public function show(ServiceItem $serviceItem)
     {
         //
     }
@@ -35,7 +44,7 @@ class ServiceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Service $service)
+    public function update(Request $request, ServiceItem $serviceItem)
     {
         //
     }
@@ -43,7 +52,7 @@ class ServiceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Service $service)
+    public function destroy(ServiceItem $serviceItem)
     {
         //
     }

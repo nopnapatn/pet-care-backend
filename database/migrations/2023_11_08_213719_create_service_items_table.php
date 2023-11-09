@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('services', function (Blueprint $table) {
+        Schema::create('service_items', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('description')->nullable();
+            $table->string('service_name')->comment('Spa Bath Package, All-Inclusive Groom Package, A La Carte Spa Services');
             $table->string('type')->comment('package, alacarte');
+            $table->string('option');
+            $table->string('breed_size')->nullable();
+            $table->double('price');
             $table->timestamps();
         });
     }
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('services');
+        Schema::dropIfExists('service_items');
     }
 };
