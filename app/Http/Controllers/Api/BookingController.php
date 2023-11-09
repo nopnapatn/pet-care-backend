@@ -232,7 +232,7 @@ class BookingController extends Controller
         $rules = [
             'room_type_id' => 'required|exists:room_types,id',
             'check_in' => 'required|date',
-            'check_out' => 'required|date|after:check_in',
+            'check_out' => 'required|date',
             'pets_amount' => 'required|integer|min:1',
             'owner_instruction' => 'nullable|string',
         ];
