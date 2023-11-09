@@ -99,46 +99,46 @@ class BookingController extends Controller
         $nights = $checkIn->diff($checkOut)->format('%a');
         $days = $nights + 1;
 
-        $room = $this->book($roomType->id, $user->id);
-        if ($room instanceof Room) {
-            // Create the booking order
+        // $room = $this->book($roomType->id, $user->id);
+        // if ($room instanceof Room) {
+        // Create the booking order
 
-            $bookingOrder = new BookingOrder();
-            $bookingOrder->room_number = $room->number;
-            $bookingOrder->room_type_id = $roomType->id;
-            $bookingOrder->user_id = $user->id;
-            $bookingOrder->check_in = $checkIn;
-            $bookingOrder->check_out = $checkOut;
-            $bookingOrder->pets_amount = $data['pets_amount'];
-            $bookingOrder->total_price = $this->calculateTotalPrice($roomType->price, $days);
-            if (isset($data['owner_instruction'])) {
-                $bookingOrder->owner_instruction = $data['owner_instruction'];
-            }
-            $bookingOrder->save();
-
-            $room->booking_order_id = $bookingOrder->id;
-            $room->save();
-
-            return $bookingOrder;
+        $bookingOrder = new BookingOrder();
+        $bookingOrder->room_type_id = $roomType->id;
+        $bookingOrder->user_id = $user->id;
+        $bookingOrder->check_in = $checkIn;
+        $bookingOrder->check_out = $checkOut;
+        $bookingOrder->pets_amount = $data['pets_amount'];
+        $bookingOrder->total_price = $this->calculateTotalPrice($roomType->price, $days);
+        if (isset($data['owner_instruction'])) {
+            $bookingOrder->owner_instruction = $data['owner_instruction'];
         }
-        return null;
+        $bookingOrder->save();
+
+        // $room->booking_order_id = $bookingOrder->id;
+        // $room->save();
+
+        return $bookingOrder;
+        // }
+        // return null;
     }
 
-    public function book($roomTypeId, $userId)
-    {
-        $roomType = RoomType::find($roomTypeId);
-        // Find the first available room
-        $room = $roomType->rooms()->where('status', RoomStatus::AVAILABLE)->first();
-        if (!$room) {
-            return response()->json([
-                'message' => 'No rooms available',
-            ], 400);
-        }
-        // Update the room type details
-        $roomType->available_amount = $roomType->getAvailableRoomsCount();
-        $roomType->save();
-        return $room;
-    }
+    // public function book($roomTypeId, $userId)
+    // {
+    //     $roomType = RoomType::find($roomTypeId);
+    //     // Find the first available room
+    //     $room = $roomType->rooms()->where('status', RoomStatus::AVAILABLE)->first();
+    //     if (!$room) {
+    //         return response()->json([
+    //             'message' => 'No rooms available',
+    //         ], 400);
+    //     }
+
+    //     // Update the room type details
+    //     $roomType->available_amount = $roomType->getAvailableRoomsCount();
+    //     $roomType->save();
+    //     return $room;
+    // }
 
     public function checkRoomAvailability($roomType, $checkIn, $checkOut,)
     {
@@ -161,6 +161,8 @@ class BookingController extends Controller
             })
             ->get();
 
+        $roomType->available_amount = $maxRoomCount - $conflictingBookings->count();
+        $roomType->save();
         if ($conflictingBookings->count() >= $maxRoomCount) {
             return false;
         }
@@ -187,6 +189,13 @@ class BookingController extends Controller
                 'message' => 'Booking order not found',
             ], 400);
         }
+        $room = $bookingOrder->roomType->rooms()->where('status', RoomStatus::AVAILABLE)->first();
+        $room->booking_order_id = $bookingOrder->id;
+        $room->user_id = $bookingOrder->user_id;
+        $room->status = RoomStatus::IN_USE;
+        $room->save();
+
+        $bookingOrder->room_number = $room->number;
         $bookingOrder->status = BookingOrderStatus::IN_USE;
         $bookingOrder->save();
 
