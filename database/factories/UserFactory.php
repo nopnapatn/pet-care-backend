@@ -20,14 +20,19 @@ class UserFactory extends Factory
         return [
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
-            'phone_number' => fake()->phoneNumber(),
+            'phone_number' => $this->generatePhoneNumber(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => bcrypt('1234'), // password
             'remember_token' => Str::random(10),
         ];
     }
-
+    function generatePhoneNumber()
+    {
+        $uniqueDigits = fake()->unique()->numberBetween(1000000000, 9999999999);
+        $phoneNumber = sprintf("%010d", $uniqueDigits);
+        return preg_replace("/^(\d{3})(\d{3})(\d{4})$/", "$1-$2-$3", $phoneNumber);
+    }
     /**
      * Indicate that the model's email address should be unverified.
      */

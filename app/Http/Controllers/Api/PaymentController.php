@@ -59,7 +59,8 @@ class PaymentController extends Controller
         }
     }
 
-    public function serviceStore(Request $request) {
+    public function serviceStore(Request $request)
+    {
         // $bookingOrder = BookingOrder::findOrFail($request->get('booking_order_id'));
         $serviceOrder = ServiceOrder::findOrFail($request->get('service_order_id'));
         $serviceOrder->status = 'PENDING';
@@ -90,7 +91,7 @@ class PaymentController extends Controller
             return response()->json(['message' => 'Payment created successfully', 'payment' => $payment, 'imagePath' => $imagePath], 200);
         } else {
             return response()->json(['message' => 'Payment created failed'], 400);
-        } 
+        }
     }
 
     public function verifyPayment($id)
