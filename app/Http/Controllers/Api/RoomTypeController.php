@@ -36,9 +36,9 @@ class RoomTypeController extends Controller
     }
     public function getAvailableRoomTypes(Request $request)
     {
-        $startDate = $request->get('start_date');
-        $endDate = $request->get('end_date');
-        $petsAmount = $request->get('pets_amount');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $petsAmount = $request->input('pets_amount');
 
         $roomTypes = RoomType::where('max_pets', '>=', $petsAmount)->get();
         $availableRoomTypes = [];
@@ -47,7 +47,7 @@ class RoomTypeController extends Controller
                 $availableRoomTypes[] = $roomType;
             }
         }
-        return response()->json(['available_room_types' => $availableRoomTypes], 200);
+        return $availableRoomTypes;
     }
 
     /**

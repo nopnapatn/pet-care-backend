@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\BookingOrder;
+use App\Models\Enums\BookingOrderStatus;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 
@@ -57,12 +58,40 @@ class PaymentController extends Controller
         }
     }
 
-    public function verifyPayment(Request $request)
+    public function verifyPayment($id)
     {
-        $payment = Payment::findOrFail($request->get('payment_id'));
-        $payment->status = 'VERIFIED';
-        $payment->save();
-        return response()->json(['message' => 'Payment verified successfully', 'payment' => $payment], 200);
+        $payment = Payment::find($id);
+        $bookingOrder = BookingOrder::find($payment->booking_order_id);
+        if (!$bookingOrder) {
+            return response()->json([
+                'message' => 'Booking order not found',
+            ], 404);
+        }
+        $bookingOrder->status = BookingOrderStatus::VERIFIED;
+        $bookingOrder->save();
+
+        return response()->json([
+            'message' => 'Payment verified',
+            'booking_order' => $bookingOrder,
+        ], 201);
+    }
+
+    public function rejectPayment($id)
+    {
+        $payment = Payment::find($id);
+        $bookingOrder = BookingOrder::find($payment->booking_order_id);
+        if (!$bookingOrder) {
+            return response()->json([
+                'message' => 'Booking order not found',
+            ], 404);
+        }
+        $bookingOrder->status = BookingOrderStatus::CANCELED;
+        $bookingOrder->save();
+
+        return response()->json([
+            'message' => 'Payment rejected',
+            'booking_order' => $bookingOrder,
+        ], 201);
     }
 
     public function getHotelPayments()

@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\PetController;
 use App\Http\Controllers\Api\RoomTypeController;
+use App\Http\Controllers\Api\ServiceItemController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,7 +29,8 @@ Route::middleware(["auth:api"])->group(function () {
     // Route::apiResource('payments', [PaymentController::class]);
     Route::get('/payments/{id}', [PaymentController::class, 'show']);
     Route::post('/payments/store', [PaymentController::class, 'store']);
-    Route::put('/payments/verify', [PaymentController::class, 'verifyPayment']); //
+    Route::put('/payments/{id}/verify', [PaymentController::class, 'verifyPayment']); //
+    Route::put('/payments/{id}/reject', [PaymentController::class, 'rejectPayment']); //
 
     Route::get('/users', [UserController::class, 'index']);
 
@@ -56,6 +58,11 @@ Route::put('room-types/{room_type}/in-use', [RoomTypeController::class, 'setInUs
 Route::put('room-types/{room_type}/maintenance', [RoomTypeController::class, 'setMaintenanceStatus'])->name('room-types.maintenance');
 Route::post('room-types/image-catalogues', [RoomTypeController::class, 'multipleUpload'])->name('room-types.image-catalogues.store');
 Route::apiResource('room-types', RoomTypeController::class);
+
+// Service
+Route::get('service-items/get-service-items-by-size', [ServiceItemController::class, 'getServiceItemBySize']);
+
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
