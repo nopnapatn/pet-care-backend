@@ -33,6 +33,7 @@ Route::middleware(["auth:api"])->group(function () {
     Route::post('/payments/store', [PaymentController::class, 'store']);
     Route::put('/payments/{id}/verify', [PaymentController::class, 'verifyPayment']); //
     Route::put('/payments/{id}/reject', [PaymentController::class, 'rejectPayment']); //
+    Route::post('/payments/service/store', [PaymentController::class, 'serviceStore']);
 
     Route::get('/users', [UserController::class, 'index']);
 
