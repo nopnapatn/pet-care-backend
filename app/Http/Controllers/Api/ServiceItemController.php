@@ -17,12 +17,15 @@ class ServiceItemController extends Controller
 
         return response()->json($serviceItems);
     }
+    
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        $serviceItems = ServiceItem::all();
 
+        return response()->json($serviceItems);
     }
 
     /**

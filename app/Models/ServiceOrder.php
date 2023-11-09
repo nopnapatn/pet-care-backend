@@ -11,7 +11,7 @@ class ServiceOrder extends Model
 
     protected $fillable = [
         'user_id',
-        'service_item_id',
+        // 'service_item_id',
         'service_date',
         'total_price',
         'pet_type',
@@ -23,8 +23,18 @@ class ServiceOrder extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function serviceItem()
+    public function serviceItems()
     {
-        return $this->hasMany(ServiceItem::class);
+        return $this->belongsToMany(ServiceItem::class, 'service_order_service_items');
+    }
+
+    public function serviceOrderServiceItem()
+    {
+        return $this->hasMany(ServiceOrderServiceItem::class);
+    }
+
+    public function payment()
+    {
+        return $this->hasOne(Payment::class);
     }
 }

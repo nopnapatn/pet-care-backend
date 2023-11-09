@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\PetController;
 use App\Http\Controllers\Api\RoomTypeController;
 use App\Http\Controllers\Api\ServiceItemController;
+use App\Http\Controllers\Api\ServiceOrderController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -49,6 +50,15 @@ Route::middleware(["auth:api"])->group(function () {
     });
 });
 
+// Service Item
+Route::get('service-items/get-service-items-by-size', [ServiceItemController::class, 'getServiceItemBySize']);
+Route::get('service-items', [ServiceItemController::class, 'index']);
+
+// Service Order
+Route::post('service-orders/init-service-order', [ServiceOrderController::class, 'initServiceOrder']);
+Route::get('service-orders/is-available', [ServiceOrderController::class, 'isAvailable']);
+Route::get('service-orders/get-user-current-order', [ServiceOrderController::class, 'getUserCurrentOrder']);
+
 Route::post('room-types/get-available-types', [RoomTypeController::class, 'getAvailableRoomTypes']);
 Route::get('room-types/cat-rooms', [RoomTypeController::class, 'getCatRooms']);
 Route::get('room-types/dog-rooms', [RoomTypeController::class, 'getDogRooms']);
@@ -57,8 +67,7 @@ Route::put('room-types/{room_type}/maintenance', [RoomTypeController::class, 'se
 Route::post('room-types/image-catalogues', [RoomTypeController::class, 'multipleUpload'])->name('room-types.image-catalogues.store');
 Route::apiResource('room-types', RoomTypeController::class);
 
-// Service
-Route::get('service-items/get-service-items-by-size', [ServiceItemController::class, 'getServiceItemBySize']);
+
 
 
 
