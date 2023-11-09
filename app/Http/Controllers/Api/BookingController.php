@@ -162,6 +162,7 @@ class BookingController extends Controller
             ->get();
 
         $roomType->available_amount = $maxRoomCount - $conflictingBookings->count();
+        $roomType->save();
         if ($conflictingBookings->count() >= $maxRoomCount) {
             return false;
         }
