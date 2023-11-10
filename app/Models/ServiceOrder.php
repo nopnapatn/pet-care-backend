@@ -37,4 +37,18 @@ class ServiceOrder extends Model
     {
         return $this->hasOne(Payment::class);
     }
+
+    public function calculateTotalPrice()
+    {
+        // Eager load the serviceItems relationship
+        $this->load('serviceItems');
+
+        $totalPrice = 0;
+
+        foreach ($this->serviceItems as $serviceItem) {
+            $totalPrice += $serviceItem->price;
+        }
+
+        return $totalPrice;
+    }
 }
