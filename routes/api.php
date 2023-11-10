@@ -45,6 +45,7 @@ Route::middleware(["auth:api"])->group(function () {
     Route::post('room-types/{id}/book', [BookingController::class, 'store']);
     Route::put('booking-orders/{id}/check-in', [BookingController::class, 'checkIn']); // 
     Route::put('booking-orders/{id}/check-out', [BookingController::class, 'checkOut']); // 
+    Route::get('dashboard/get-data', [BookingController::class, 'getDashboardData']);
 
     Route::group(['prefix' => 'booking-orders'], function () {
         Route::get('waiting', [BookingController::class, 'getWaitingBookingOrders']);
@@ -59,6 +60,7 @@ Route::middleware(["auth:api"])->group(function () {
 // Service Item
 Route::get('service-items/get-service-items-by-size', [ServiceItemController::class, 'getServiceItemBySize']);
 Route::get('service-items', [ServiceItemController::class, 'index']);
+Route::get('service-orders/get-pending-orders', [ServiceOrderController::class, 'getPendingOrders']);
 
 // Service Order
 Route::post('service-orders/init-service-order', [ServiceOrderController::class, 'initServiceOrder']);

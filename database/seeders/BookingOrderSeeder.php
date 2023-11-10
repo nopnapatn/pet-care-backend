@@ -43,7 +43,7 @@ class BookingOrderSeeder extends Seeder
             $bookingOrder->save();
         }
 
-        for ($i = 0; $i < 40; $i++) {
+        for ($i = 0; $i < 15; $i++) {
             $user = User::where('role', 'USER')->inRandomOrder()->first();
             $check_in = $faker->dateTimeBetween('-1 month', '+1 month');
             $check_out = $faker->dateTimeBetween($check_in->format('Y-m-d') . '+1 days', $check_in->format('Y-m-d') . '+12 days');

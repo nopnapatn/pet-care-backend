@@ -296,29 +296,41 @@ class BookingController extends Controller
 
     public function getPendingBookingOrders()
     {
-        $bookingOrders = BookingOrder::with('payment')->where('status', BookingOrderStatus::PENDING)->get();
+        $bookingOrders = BookingOrder::with('payment')->where('status', BookingOrderStatus::PENDING)->orderBy('check_in', 'asc')->get();
         return $bookingOrders;
     }
     public function getVerifiedBookingOrders()
     {
-        $bookingOrders = BookingOrder::where('status', BookingOrderStatus::VERIFIED)->get();
+        $bookingOrders = BookingOrder::where('status', BookingOrderStatus::VERIFIED)->orderBy('check_in', 'asc')->get();
         return $bookingOrders;
     }
     public function getInUseBookingOrders()
     {
-        $bookingOrders = BookingOrder::where('status', BookingOrderStatus::IN_USE)->get();
+        $bookingOrders = BookingOrder::where('status', BookingOrderStatus::IN_USE)->orderBy('check_in', 'asc')->get();
         return $bookingOrders;
     }
     public function getCompleteBookingOrders()
     {
-        $bookingOrders = BookingOrder::where('status', BookingOrderStatus::COMPLETED)->get();
+        $bookingOrders = BookingOrder::where('status', BookingOrderStatus::COMPLETED)->orderBy('check_in', 'asc')->get();
         return $bookingOrders;
     }
     public function getCanceledBookingOrders()
     {
-        $bookingOrders = BookingOrder::where('status', BookingOrderStatus::CANCELED)->get();
+        $bookingOrders = BookingOrder::where('status', BookingOrderStatus::CANCELED)->orderBy('check_in', 'asc')->get();
         return $bookingOrders;
     }
+
+    public function getDashboardData()
+    {
+        // $totalUser = User::where('role', 'USER')->count();
+        $users = User::where('role', 'USER')->get();
+        $bookingOrders = BookingOrder::all();
+        return response()->json([
+            'users' => $users,
+            'booking_orders' => $bookingOrders,
+        ], 200);
+    }
+
     /**
      * Display the specified resource.
      */

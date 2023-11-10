@@ -16,7 +16,7 @@ class RoomTypeSeeder extends Seeder
         $roomTypes = [
             [
                 'title' => 'Small Cat Room',
-                'description' => 'Small room for a single cat',
+                'description' => 'Small room for a 1 cat',
                 'price' => 100,
                 'status' => 'AVAILABLE',
                 'available_amount' => 10,
@@ -27,7 +27,7 @@ class RoomTypeSeeder extends Seeder
             ],
             [
                 'title' => 'Medium Cat Room',
-                'description' => 'Medium room for two cats',
+                'description' => 'Medium room for 2 cats',
                 'price' => 200,
                 'status' => 'AVAILABLE',
                 'available_amount' => 10,
@@ -39,7 +39,7 @@ class RoomTypeSeeder extends Seeder
             ],
             [
                 'title' => 'Large Cat Room',
-                'description' => 'Large room for three cats',
+                'description' => 'Large room for 3 cats',
                 'price' => 300,
                 'status' => 'AVAILABLE',
                 'available_amount' => 10,
@@ -51,7 +51,7 @@ class RoomTypeSeeder extends Seeder
             ],
             [
                 'title' => 'Small Dog Room',
-                'description' => 'Small room for a single dog',
+                'description' => 'Small room for a 1 dog',
                 'price' => 100,
                 'status' => 'AVAILABLE',
                 'available_amount' => 10,
@@ -63,7 +63,7 @@ class RoomTypeSeeder extends Seeder
             ],
             [
                 'title' => 'Medium Dog Room',
-                'description' => 'Medium room for two dogs',
+                'description' => 'Medium room for 2 dogs',
                 'price' => 200,
                 'status' => 'AVAILABLE',
                 'available_amount' => 10,
@@ -76,7 +76,7 @@ class RoomTypeSeeder extends Seeder
 
             [
                 'title' => 'Large Dog Room',
-                'description' => 'Large room for three dogs',
+                'description' => 'Large room for 3 dogs',
                 'price' => 300,
                 'status' => 'AVAILABLE',
                 'available_amount' => 10,

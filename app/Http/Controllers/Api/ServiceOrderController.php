@@ -64,7 +64,13 @@ class ServiceOrderController extends Controller
         $serviceOrders = ServiceOrder::where('user_id', $id)->get();
 
         return $serviceOrders;
+    }
 
+    public function getPendingOrders()
+    {
+        $serviceOrders = ServiceOrder::where('status', 'PENDING')->orderBy('service_date', 'asc')->get();
+
+        return $serviceOrders;
     }
 
     public function getOrderItem(Request $request)
