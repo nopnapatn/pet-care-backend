@@ -53,8 +53,8 @@ class ServiceOrderController extends Controller
     public function getUserCurrentOrder(Request $request, $id)
     {
         $latestServiceOrder = ServiceOrder::where('user_id', $id)
-        ->latest()
-        ->first();
+            ->latest()
+            ->first();
 
         return $latestServiceOrder;
     }
@@ -72,6 +72,24 @@ class ServiceOrderController extends Controller
 
         return $serviceOrders;
     }
+    public function getWaitingOrders()
+    {
+        $serviceOrders = ServiceOrder::where('status', 'WAITING')->orderBy('service_date', 'asc')->get();
+
+        return $serviceOrders;
+    }
+    public function getVerifiedOrders()
+    {
+        $serviceOrders = ServiceOrder::where('status', 'VERIFIED')->orderBy('service_date', 'asc')->get();
+
+        return $serviceOrders;
+    }
+    public function getCancelOrders()
+    {
+        $serviceOrders = ServiceOrder::where('status', 'CANCELED')->orderBy('service_date', 'asc')->get();
+
+        return $serviceOrders;
+    }
 
     public function getOrderItem(Request $request)
     {
@@ -80,6 +98,5 @@ class ServiceOrderController extends Controller
         $serviceItems = $serviceOrder->load('serviceItems');
 
         return $serviceItems;
-
     }
 }

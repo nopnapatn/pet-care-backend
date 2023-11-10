@@ -61,6 +61,10 @@ Route::middleware(["auth:api"])->group(function () {
 Route::get('service-items/get-service-items-by-size', [ServiceItemController::class, 'getServiceItemBySize']);
 Route::get('service-items', [ServiceItemController::class, 'index']);
 Route::get('service-orders/get-pending-orders', [ServiceOrderController::class, 'getPendingOrders']);
+Route::get('service-orders/get-waiting-orders', [ServiceOrderController::class, 'getWaitingOrders']);
+Route::get('service-orders/get-verified-orders', [ServiceOrderController::class, 'getVerifiedOrders']);
+Route::get('service-orders/get-canceled-orders', [ServiceOrderController::class, 'getCanceledOrders']);
+
 
 // Service Order
 Route::post('service-orders/init-service-order', [ServiceOrderController::class, 'initServiceOrder']);
