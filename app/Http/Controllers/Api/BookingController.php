@@ -35,7 +35,7 @@ class BookingController extends Controller
 
     public function index()
     {
-        $bookingOrders = BookingOrder::all();
+        $bookingOrders = BookingOrder::orderBy('check_in', 'asc')->get();
         return $bookingOrders;
     }
 
@@ -276,8 +276,7 @@ class BookingController extends Controller
     public function myBookings($id)
     {
         $user = User::find($id);
-        $bookingOrders = BookingOrder::with('roomType')->where('user_id', $user->id)->get();
-
+        $bookingOrders = BookingOrder::with('roomType')->where('user_id', $user->id)->orderBy('check_in', 'asc')->get();
         return $bookingOrders;
     }
 
@@ -291,14 +290,13 @@ class BookingController extends Controller
 
     public function getWaitingBookingOrders()
     {
-        $bookingOrders = BookingOrder::where('status', BookingOrderStatus::WAITING)->get();
+        $bookingOrders = BookingOrder::where('status', BookingOrderStatus::WAITING)->orderBy('check_in', 'asc')->get();
         return $bookingOrders;
     }
 
     public function getPendingBookingOrders()
     {
         $bookingOrders = BookingOrder::with('payment')->where('status', BookingOrderStatus::PENDING)->get();
-
         return $bookingOrders;
     }
     public function getVerifiedBookingOrders()
