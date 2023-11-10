@@ -14,13 +14,17 @@ class ServiceOrderSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     */ 
+     */
     public function run(): void
     {
         $faker = \Faker\Factory::create();
 
         for ($i = 0; $i < 10; $i++) {
-            $user = User::where('role', 'USER')->inRandomOrder()->first();
+            $user = User::where('role', 'USER')
+                ->whereNotIn('id', [2]) // Exclude user with id 2
+                ->inRandomOrder()
+                ->first();
+
             $service_date = $faker->dateTimeBetween('-1 month', '+1 month');
             $pet_type = $faker->randomElement(['DOG', 'CAT']);
             $status = "PENDING";

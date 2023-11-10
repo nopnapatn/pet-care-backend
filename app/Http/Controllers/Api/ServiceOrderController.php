@@ -56,4 +56,14 @@ class ServiceOrderController extends Controller
 
         return $serviceOrders;
     }
+
+    public function getUsersOrder(Request $request, $id)
+    {
+        $serviceOrders = ServiceOrder::where('user_id', $id)->get();
+
+        $serviceItems = $serviceOrders->load('serviceItems');
+
+        return $serviceOrders;
+
+    }
 }
