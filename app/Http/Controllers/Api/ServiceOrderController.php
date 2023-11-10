@@ -50,9 +50,9 @@ class ServiceOrderController extends Controller
         }
     }
 
-    public function getUserCurrentOrder(Request $request)
+    public function getUserCurrentOrder(Request $request, $id)
     {
-        $serviceOrders = ServiceOrder::where('user_id', $request->input("user_id"))->get();
+        $serviceOrders = ServiceOrder::where('user_id', $id)->get();
 
         return $serviceOrders;
     }
