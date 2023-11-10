@@ -65,6 +65,7 @@ Route::post('service-orders/init-service-order', [ServiceOrderController::class,
 Route::get('service-orders/is-available', [ServiceOrderController::class, 'isAvailable']);
 Route::get('service-orders/{id}/get-user-current-order', [ServiceOrderController::class, 'getUserCurrentOrder']);
 Route::get('service-orders/{id}/get-users-order', [ServiceOrderController::class, 'getUsersOrder']);
+Route::get('service-orders/get-order-item', [ServiceOrderController::class, 'getOrderItem']);
 
 // Profile
 Route::get('profile/{id}', [ProfileController::class, 'show']);

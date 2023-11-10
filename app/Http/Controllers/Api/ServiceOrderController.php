@@ -52,18 +52,28 @@ class ServiceOrderController extends Controller
 
     public function getUserCurrentOrder(Request $request, $id)
     {
-        $serviceOrders = ServiceOrder::where('user_id', $id)->get();
+        $latestServiceOrder = ServiceOrder::where('user_id', $id)
+        ->latest()
+        ->first();
 
-        return $serviceOrders;
+        return $latestServiceOrder;
     }
 
-    public function getUsersOrder(Request $request, $id)
+    public function getUsersOrder($id)
     {
         $serviceOrders = ServiceOrder::where('user_id', $id)->get();
 
-        $serviceItems = $serviceOrders->load('serviceItems');
-
         return $serviceOrders;
+
+    }
+
+    public function getOrderItem(Request $request)
+    {
+        $serviceOrder = ServiceOrder::findOrFail($request->service_order_id);
+
+        $serviceItems = $serviceOrder->load('serviceItems');
+
+        return $serviceItems;
 
     }
 }
